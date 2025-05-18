@@ -59,9 +59,9 @@ public class Racing_Game extends Application {
 
                 // Draw cars
                 gc.setFill(Color.CYAN);
-                gc.fillRect(200, car1Y, 50, 100);
+                gc.fillRect(car1Y, 200, 50, 100);
                 gc.setFill(Color.RED);
-                gc.fillRect(600, car2Y, 50, 100);
+                gc.fillRect(car1Y, 200, 50, 100);
             }
         };
 
