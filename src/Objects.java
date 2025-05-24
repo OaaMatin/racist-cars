@@ -13,7 +13,7 @@ public class Objects {
         this.Lane = Lane;
 
         try {
-            Image obstacleImage = new Image("car1skin1.png");
+            Image obstacleImage = new Image("resources/pictures/car1skin1.png");
             obstacle = new ImageView(obstacleImage);
             obstacle.setFitWidth(screenWidth / 20);
             obstacle.setFitHeight(screenWidth / 16);

@@ -19,7 +19,7 @@ public class Main extends Application {
     private double hue2 = 0;
 
     public void start(Stage primaryStage) {
-        Image cursorImage = new Image("fuck_finger.png");
+        Image cursorImage = new Image("resources/pictures/fuck_finger.png");
         ImageCursor customCursor = new ImageCursor(cursorImage,
                 cursorImage.getWidth() / 2, cursorImage.getHeight() / 2);
         Pane root = new Pane();
