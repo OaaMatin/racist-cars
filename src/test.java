@@ -8,6 +8,9 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class test extends Application {
+    public int randomLain(){
+        return (int) (Math.random() * 10);
+    }
 
     @Override
     public void start(Stage primaryStage) {
@@ -30,13 +33,15 @@ public class test extends Application {
         transition.setAutoReverse(true); // go back and forth
 
         // Start the animation
-        transition.play();
+
 
     }
 
     public static void main(String[] args) {
-        Rectangle rect = new Rectangle(50, 50, 100, 100);
-        System.out.println(rect.getX());
+
+        test app = new test();
+        int randomLain = app.randomLain();
+        System.out.println(randomLain);
     }
 }
 

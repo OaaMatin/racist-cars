@@ -1,7 +1,8 @@
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -9,70 +10,219 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Racing_Game extends Application {
+    private static final int INITIAL_OBSTACLES_PER_ROAD = 5;
+    private static final double OBSTACLE_INCREMENT_DISTANCE = 2000;
+    private static final int MAX_OBSTACLES_PER_ROAD = 10;
 
-    Rectangle2D bounds = Screen.getPrimary().getBounds();
-    double screenWidth = bounds.getWidth();
-    double screenHeight = bounds.getHeight();
-    double car1X = screenWidth / 8;
-    double car1Y = 0.8 * screenHeight;
-    double car2X = (92.5 / 100) * screenWidth;
-    double car2Y = 0.8 * screenHeight;
-    double cars_width = screenWidth / 20;
-    double cars_height = screenHeight / 15;
+    private Pane root;
+    Set<KeyCode> pressedkeys = new HashSet<>();
+
+    double screenWidth = Screen.getPrimary().getBounds().getWidth();
+    double screenHeight = Screen.getPrimary().getBounds().getHeight();
+
+    ArrayList<Objects> obstacles1 = new ArrayList<>();
+    ArrayList<Objects> obstacles2 = new ArrayList<>();
+
     AtomicBoolean car1_ismoving = new AtomicBoolean(false);
     AtomicBoolean car2_ismoving = new AtomicBoolean(false);
 
-    public void start(Stage primaryStage) {
-        Set<KeyCode> pressedKeys = new HashSet<>();
-        Pane root = new Pane();
-        Scene scene = new Scene(root);
+    RoadMap map1;
+    RoadMap map2;
 
-        Rectangle[] lines = new Rectangle[9];
-        for (int i = 1; i <= 9; i++) {
-            Rectangle line = new Rectangle(
-                    (screenWidth * 0.10 * i) - (screenWidth / 200 - screenWidth / 1000),
-                    0,
-                    screenWidth / 100 - screenWidth / 500,
-                    screenHeight
-            );
-            line.setFill(Color.BLACK);
-            lines[i - 1] = line;
+    ImageView car1;
+    ImageView car2;
+
+    double velocity1 = 0;
+    double velocity2 = 0;
+    double acceleration = 0.05;
+    double maxVelocity = 13;
+    double distance1 = 0;
+    double distance2 = 0;
+    final double finishDistance = 10000;
+    boolean gameOver = false;
+
+    Rectangle finishLine1;
+    Rectangle finishLine2;
+
+    AnimationTimer timer;
+
+    public void start(Stage stage) {
+        root = new Pane();
+        Scene scene = new Scene(root, screenWidth, screenHeight);
+
+        scene.setOnKeyPressed(e -> pressedkeys.add(e.getCode()));
+        scene.setOnKeyReleased(e -> pressedkeys.remove(e.getCode()));
+
+        map1 = new RoadMap(screenWidth / 2, screenHeight);
+        map2 = new RoadMap(screenWidth / 2, screenHeight);
+        map2.setLayoutX(screenWidth / 2);
+
+        try {
+            Image car1Image = new Image("car1skin1.png");
+            Image car2Image = new Image("car1skin2.png");
+
+            car1 = new ImageView(car1Image);
+            car2 = new ImageView(car2Image);
+
+            car1.setFitWidth(screenWidth / 20);
+            car1.setFitHeight(screenHeight / 8);
+            car2.setFitWidth(screenWidth / 20);
+            car2.setFitHeight(screenHeight / 8);
+
+            car1.setLayoutX(screenWidth * 0.14);
+            car1.setLayoutY(screenHeight * 0.8);
+
+            car2.setLayoutX(screenWidth * 0.88);
+            car2.setLayoutY(screenHeight * 0.8);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
         }
 
-        Rectangle car1 = new Rectangle(car1X, car1Y, cars_width, cars_height);
-        car1.setFill(Color.MAGENTA);
-        Rectangle car2 = new Rectangle(car2X, car2Y, cars_width, cars_height);
-        car2.setFill(Color.HOTPINK);
+        // Finish lines
+        finishLine1 = new Rectangle(map1.getLayoutX() + map1.grassWidth, 0, map1.roadWidth, 10);
+        finishLine1.setFill(Color.RED);
+        finishLine1.setVisible(false);
 
-        root.getChildren().addAll(lines);
-        root.getChildren().addAll(car1, car2);
+        finishLine2 = new Rectangle(map2.getLayoutX() + map2.grassWidth, 0, map2.roadWidth, 10);
+        finishLine2.setFill(Color.RED);
+        finishLine2.setVisible(false);
 
-        scene.setOnKeyPressed(event -> pressedKeys.add(event.getCode()));
-        scene.setOnKeyReleased(event -> pressedKeys.remove(event.getCode()));
-        car1.setX(car1X);
-        car2.setX(car2X);
+        root.getChildren().addAll(map1, map2, car1, car2, finishLine1, finishLine2);
 
-        AnimationTimer gameLoop = new AnimationTimer() {
-            @Override
+        for (int i = 0; i < INITIAL_OBSTACLES_PER_ROAD; i++) {
+            int randomLane1 = (int) (Math.random() * 5); // lanes 0 to 4
+            int randomLane2 = 5 + (int) (Math.random() * 5); // lanes 5 to 9
+
+            Objects obj1 = new Objects(randomLane1);
+            Objects obj2 = new Objects(randomLane2);
+
+            obj1.setObjectY(-Math.random() * 2000);
+            obj2.setObjectY(-Math.random() * 2000);
+
+            obstacles1.add(obj1);
+            obstacles2.add(obj2);
+
+            root.getChildren().addAll(obj1.getObstacle(), obj2.getObstacle());
+        }
+
+        timer = new AnimationTimer() {
             public void handle(long now) {
-               Cars.move1(car1,pressedKeys,car1_ismoving);
-               Cars.move2(car2,pressedKeys,car2_ismoving);
-
-
-
-                Cars.display(car1, car2);
+                if (!gameOver) {
+                    Cars.move1(car1, pressedkeys, car1_ismoving);
+                    Cars.move2(car2, pressedkeys, car2_ismoving);
+                    update();
+                    if (distance1 >= finishDistance) {
+                        System.out.println("Car 1 wins!");
+                        gameOver = true;
+                        timer.stop();
+                    } else if (distance2 >= finishDistance) {
+                        System.out.println("Car 2 wins!");
+                        gameOver = true;
+                        timer.stop();
+                    }
+                }
             }
         };
-        gameLoop.start();
-        primaryStage.setTitle("Racing Game");
-        primaryStage.setScene(scene);
-        primaryStage.setFullScreen(true);
-        primaryStage.show();
+
+        timer.start();
+
+        stage.setTitle("Racing Game");
+        stage.setScene(scene);
+        stage.setFullScreen(true);
+        stage.show();
+        Cars.Control_car1 = 2;
+        Cars.Control_car2 = 5;
+    }
+
+    void update() {
+        if (velocity1 < maxVelocity) velocity1 += acceleration;
+        if (velocity2 < maxVelocity) velocity2 += acceleration;
+
+        if (velocity1 > maxVelocity) velocity1 = maxVelocity;
+        if (velocity2 > maxVelocity) velocity2 = maxVelocity;
+
+        map1.updateMap1(velocity1);
+        map2.updateMap2(velocity2);
+
+        distance1 += velocity1; // Update distance traveled
+        distance2 += velocity2;
+
+        // Add new obstacles based on distance
+        int desiredObstacles1 = INITIAL_OBSTACLES_PER_ROAD + (int)(distance1 / OBSTACLE_INCREMENT_DISTANCE);
+        desiredObstacles1 = Math.min(desiredObstacles1, MAX_OBSTACLES_PER_ROAD);
+        while (obstacles1.size() < desiredObstacles1) {
+            int randomLane1 = (int)(Math.random() * 5); // lanes 0 to 4
+            Objects newObj1 = new Objects(randomLane1);
+            newObj1.setObjectY(-Math.random() * 2000);
+            obstacles1.add(newObj1);
+            root.getChildren().add(newObj1.getObstacle());
+        }
+
+        int desiredObstacles2 = INITIAL_OBSTACLES_PER_ROAD + (int)(distance2 / OBSTACLE_INCREMENT_DISTANCE);
+        desiredObstacles2 = Math.min(desiredObstacles2, MAX_OBSTACLES_PER_ROAD);
+        while (obstacles2.size() < desiredObstacles2) {
+            int randomLane2 = 5 + (int)(Math.random() * 5); // lanes 5 to 9
+            Objects newObj2 = new Objects(randomLane2);
+            newObj2.setObjectY(-Math.random() * 2000);
+            obstacles2.add(newObj2);
+            root.getChildren().add(newObj2.getObstacle());
+        }
+
+        for (Objects obj : obstacles1) {
+            ImageView iv = obj.getObstacle();
+            iv.setY(iv.getY() + velocity1);
+            if (iv.getY() > screenHeight) {
+                iv.setY(-Math.random() * 2000);
+            }
+        }
+
+        for (Objects obj : obstacles2) {
+            ImageView iv = obj.getObstacle();
+            iv.setY(iv.getY() + velocity2);
+            if (iv.getY() > screenHeight) {
+                iv.setY(-Math.random() * 2000);
+            }
+        }
+
+        // Collision detection for car1
+        for (Objects obj : obstacles1) {
+            ImageView iv = obj.getObstacle();
+            if (car1.getBoundsInParent().intersects(iv.getBoundsInParent())) {
+                iv.setY(-Math.random() * 2000); // Obstacle disappears
+                velocity1 *= 0.8; // Reduce velocity
+                break; // Only one collision per frame
+            }
+        }
+
+        // Collision detection for car2
+        for (Objects obj : obstacles2) {
+            ImageView iv = obj.getObstacle();
+            if (car2.getBoundsInParent().intersects(iv.getBoundsInParent())) {
+                iv.setY(-Math.random() * 2000); // Obstacle disappears
+                velocity2 *= 0.8; // Reduce velocity
+                break;
+            }
+        }
+
+        // Update finish lines
+        if (distance1 >= finishDistance - screenHeight) {
+            finishLine1.setVisible(true);
+            double finishLineY1 = car1.getLayoutY() - (finishDistance - distance1);
+            finishLine1.setY(finishLineY1);
+        }
+
+        if (distance2 >= finishDistance - screenHeight) {
+            finishLine2.setVisible(true);
+            double finishLineY2 = car2.getLayoutY() - (finishDistance - distance2);
+            finishLine2.setY(finishLineY2);
+        }
     }
 
     public static void main(String[] args) {
