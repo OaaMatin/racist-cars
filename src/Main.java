@@ -54,7 +54,7 @@ public class Main extends Application {
 
 
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(30), event -> {
-            hue += 1;
+            hue += 0.5;
             if (hue > 360) hue = 0;
             shadow.setColor(Color.hsb(hue, 1.0, 1.0));
         }));
@@ -63,7 +63,7 @@ public class Main extends Application {
 
 
         Timeline timeline2 = new Timeline(new KeyFrame(Duration.millis(30), event -> {
-            hue2 += 1;
+            hue2 += 0.5;
             if (hue2 > 360) hue2 = 0;
             shadow2.setColor(Color.hsb(hue2, 1.0, 1.0));
         }));
@@ -89,7 +89,7 @@ public class Main extends Application {
 
 
         startBtn.setStyle(
-                "-fx-background-color: white;" + "-fx-text-fill: black;" + "-fx-font-size: 20px;" + "-fx-padding: 10 30;" + "-fx-background-radius: 15;"
+                "-fx-background-color: #a24bba;" + "-fx-text-fill: black;" + "-fx-font-size: 20px;" + "-fx-padding: 10 30;" + "-fx-background-radius: 15;"
         );
 
 
@@ -110,15 +110,16 @@ public class Main extends Application {
         });
 
         Rectangle rectangle = new Rectangle(0, 0, 400, 600);
-        rectangle.setFill(Color.BLACK);
+        rectangle.setFill(Color.web("#ab9cb8"));
         root.getChildren().add(rectangle);
         root.getChildren().add(startBtn);
         root.getChildren().add(exitBtn);
         Text title = new Text("RACIST CARS");
         title.setX(250);
         title.setY(150);
-        title.setStyle("-fx-font-size: 60px; -fx-font-family: 'Courier New'; -fx-fill: black; -fx-font-weight: bold;");
+        title.setStyle("-fx-font-size: 60px; -fx-font-family: 'Courier New'; -fx-fill: #6e3b98; -fx-font-weight: bold;");
         root.getChildren().add(title);
+
         Scene scene = new Scene(root, 800, 600);
         primaryStage.setTitle("Home");
         primaryStage.setScene(scene);

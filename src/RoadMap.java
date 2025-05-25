@@ -25,13 +25,13 @@ public class RoadMap extends Pane {
         laneWidth = roadWidth / 5;
 
         Rectangle leftGrass = new Rectangle(0, 0, grassWidth, height);
-        leftGrass.setFill(Color.CYAN);
+        leftGrass.setFill(Color.web("#ab9cb8"));
 
         Rectangle road = new Rectangle(grassWidth, 0, roadWidth, height);
         road.setFill(Color.web("#1F1B24"));
 
         Rectangle rightGrass = new Rectangle(grassWidth + roadWidth, 0, grassWidth, height);
-        rightGrass.setFill(Color.CYAN);
+        rightGrass.setFill(Color.web("#ab9cb8"));
 
         getChildren().addAll(leftGrass, road, rightGrass);
 

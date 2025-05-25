@@ -40,11 +40,11 @@ public class Racing_Game extends Application {
 
     double velocity1 = 0;
     double velocity2 = 0;
-    double acceleration = 0.05;
-    double maxVelocity = 13;
+    double acceleration = 0.03;
+    double maxVelocity = 26;
     double distance1 = 0;
     double distance2 = 0;
-    final double finishDistance = 10000;
+    final double finishDistance = 30000;
     boolean gameOver = false;
 
     Rectangle finishLine1;
@@ -95,20 +95,17 @@ public class Racing_Game extends Application {
 
         root.getChildren().addAll(map1, map2, car1, car2, finishLine1, finishLine2);
 
-        for (int i = 0; i < INITIAL_OBSTACLES_PER_ROAD; i++) {
-            int randomLane1 = (int) (Math.random() * 5);
-            int randomLane2 = 5 + (int) (Math.random() * 5);
-
-            Objects obj1 = new Objects(randomLane1);
-            Objects obj2 = new Objects(randomLane2);
-
-            obj1.setObjectY(-Math.random() * 2000);
-            obj2.setObjectY(-Math.random() * 2000);
-
+        for (int lane = 0; lane < 5; lane++) {
+            Objects obj1 = new Objects(lane);
+            obj1.setObjectY(-Math.random() * 1500);
             obstacles1.add(obj1);
+            root.getChildren().add(obj1.getObstacle());
+        }
+        for (int lane = 5; lane < 10; lane++) {
+            Objects obj2 = new Objects(lane);
+            obj2.setObjectY(-Math.random() * 1500);
             obstacles2.add(obj2);
-
-            root.getChildren().addAll(obj1.getObstacle(), obj2.getObstacle());
+            root.getChildren().add(obj2.getObstacle());
         }
 
         timer = new AnimationTimer() {
@@ -153,32 +150,91 @@ public class Racing_Game extends Application {
         distance1 += velocity1;
         distance2 += velocity2;
 
-
         int desiredObstacles1 = INITIAL_OBSTACLES_PER_ROAD + (int)(distance1 / OBSTACLE_INCREMENT_DISTANCE);
         desiredObstacles1 = Math.min(desiredObstacles1, MAX_OBSTACLES_PER_ROAD);
         while (obstacles1.size() < desiredObstacles1) {
             int randomLane1 = (int)(Math.random() * 5);
-            Objects newObj1 = new Objects(randomLane1);
-            newObj1.setObjectY(-Math.random() * 2000);
-            obstacles1.add(newObj1);
-            root.getChildren().add(newObj1.getObstacle());
+            boolean tooClose = false;
+            for (Objects existing : obstacles1) {
+                if (existing.getLane() == randomLane1 &&
+                        Math.abs(existing.getObstacle().getY() + velocity1 - (-100)) < 150) {
+                    tooClose = true;
+                    break;
+                }
+            }
+            if (!tooClose) {
+                Objects newObj1 = new Objects(randomLane1);
+                newObj1.setObjectY(-100);
+                obstacles1.add(newObj1);
+                root.getChildren().add(newObj1.getObstacle());
+            }
         }
 
         int desiredObstacles2 = INITIAL_OBSTACLES_PER_ROAD + (int)(distance2 / OBSTACLE_INCREMENT_DISTANCE);
         desiredObstacles2 = Math.min(desiredObstacles2, MAX_OBSTACLES_PER_ROAD);
         while (obstacles2.size() < desiredObstacles2) {
             int randomLane2 = 5 + (int)(Math.random() * 5);
-            Objects newObj2 = new Objects(randomLane2);
-            newObj2.setObjectY(-Math.random() * 2000);
-            obstacles2.add(newObj2);
-            root.getChildren().add(newObj2.getObstacle());
+            boolean tooClose = false;
+            for (Objects existing : obstacles2) {
+                if (existing.getLane() == randomLane2 &&
+                        Math.abs(existing.getObstacle().getY() + velocity2 - (-100)) < 150) {
+                    tooClose = true;
+                    break;
+                }
+            }
+            if (!tooClose) {
+                Objects newObj2 = new Objects(randomLane2);
+                newObj2.setObjectY(-100);
+                obstacles2.add(newObj2);
+                root.getChildren().add(newObj2.getObstacle());
+            }
         }
 
         for (Objects obj : obstacles1) {
             ImageView iv = obj.getObstacle();
             iv.setY(iv.getY() + velocity1);
             if (iv.getY() > screenHeight) {
-                iv.setY(-Math.random() * 2000);
+                double obstacleHeight = iv.getBoundsInParent().getHeight();
+                double gap = 50;
+                int lane = obj.getLane();
+                boolean suitable = false;
+                int attempts = 0;
+                double candidateY;
+                while (!suitable && attempts < 10) {
+                    candidateY = -Math.random() * 2000;
+                    suitable = true;
+                    for (Objects other : obstacles1) {
+                        if (other != obj && other.getLane() == lane) {
+                            double otherY = other.getObstacle().getY();
+                            if (Math.abs(candidateY - otherY) < obstacleHeight + gap) {
+                                suitable = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (suitable) {
+                        iv.setY(candidateY);
+                    }
+                    attempts++;
+                }
+                if (!suitable) {
+                    double minY = Double.POSITIVE_INFINITY;
+                    boolean hasOther = false;
+                    for (Objects other : obstacles1) {
+                        if (other != obj && other.getLane() == lane) {
+                            double otherY = other.getObstacle().getY();
+                            if (otherY < minY) {
+                                minY = otherY;
+                            }
+                            hasOther = true;
+                        }
+                    }
+                    if (hasOther) {
+                        iv.setY(minY - obstacleHeight - gap);
+                    } else {
+                        iv.setY(-Math.random() * 2000);
+                    }
+                }
             }
         }
 
@@ -186,11 +242,50 @@ public class Racing_Game extends Application {
             ImageView iv = obj.getObstacle();
             iv.setY(iv.getY() + velocity2);
             if (iv.getY() > screenHeight) {
-                iv.setY(-Math.random() * 2000);
+                double obstacleHeight = iv.getBoundsInParent().getHeight();
+                double gap = 50;
+                int lane = obj.getLane();
+                boolean suitable = false;
+                int attempts = 0;
+                double candidateY;
+                while (!suitable && attempts < 10) {
+                    candidateY = -Math.random() * 2000;
+                    suitable = true;
+                    for (Objects other : obstacles2) {
+                        if (other != obj && other.getLane() == lane) {
+                            double otherY = other.getObstacle().getY();
+                            if (Math.abs(candidateY - otherY) < obstacleHeight + gap) {
+                                suitable = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (suitable) {
+                        iv.setY(candidateY);
+                    }
+                    attempts++;
+                }
+                if (!suitable) {
+                    double minY = Double.POSITIVE_INFINITY;
+                    boolean hasOther = false;
+                    for (Objects other : obstacles2) {
+                        if (other != obj && other.getLane() == lane) {
+                            double otherY = other.getObstacle().getY();
+                            if (otherY < minY) {
+                                minY = otherY;
+                            }
+                            hasOther = true;
+                        }
+                    }
+                    if (hasOther) {
+                        iv.setY(minY - obstacleHeight - gap);
+                    } else {
+                        iv.setY(-Math.random() * 2000);
+                    }
+                }
             }
         }
 
-        // Collision detection for car1
         for (Objects obj : obstacles1) {
             ImageView iv = obj.getObstacle();
             if (car1.getBoundsInParent().intersects(iv.getBoundsInParent())) {
@@ -200,16 +295,14 @@ public class Racing_Game extends Application {
             }
         }
 
-
         for (Objects obj : obstacles2) {
             ImageView iv = obj.getObstacle();
             if (car2.getBoundsInParent().intersects(iv.getBoundsInParent())) {
-                iv.setY(-Math.random() * 2000); // Obstacle disappears
-                velocity2 *= 0.8; // Reduce velocity
+                iv.setY(-Math.random() * 2000);
+                velocity2 *= 0.8;
                 break;
             }
         }
-
 
         if (distance1 >= finishDistance - screenHeight) {
             finishLine1.setVisible(true);

@@ -13,7 +13,20 @@ public class Objects {
         this.Lane = Lane;
 
         try {
-            Image obstacleImage = new Image("resources/pictures/car1skin1.png");
+            int n=(int)(Math.random()*3);
+            Image obstacleImage ;
+
+
+             if(n==1){
+                 obstacleImage = new Image("resources/pictures/obsticale.png");
+            }
+            else if(n==2){
+                 obstacleImage = new Image("resources/pictures/obsticale2.png");
+            }
+            else{
+                  obstacleImage = new Image("resources/pictures/obsticale3.png");
+             }
+
             obstacle = new ImageView(obstacleImage);
             obstacle.setFitWidth(screenWidth / 20);
             obstacle.setFitHeight(screenWidth / 16);
@@ -35,4 +48,8 @@ public class Objects {
     public ImageView getObstacle() {
         return obstacle;
     }
+    public int getLane() {
+        return this.Lane;
+    }
+
 }

@@ -40,7 +40,7 @@ public class Cars {
         Rectangle2D bounds = Screen.getPrimary().getBounds();
         double screenWidth = bounds.getWidth();
 
-        TranslateTransition transition = new TranslateTransition(Duration.seconds(0.35), car2);
+        TranslateTransition transition = new TranslateTransition(Duration.seconds(0.2), car2);
 
         if (kc.contains(KeyCode.LEFT) && Control_car2 > 1) {
             transition.setByX(-screenWidth * 0.08);

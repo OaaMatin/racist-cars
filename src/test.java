@@ -16,7 +16,7 @@ public class test extends Application {
     public void start(Stage primaryStage) {
         Pane root = new Pane();
 
-        // Create a Rectangle node (not using fillRect)
+
         Rectangle rect = new Rectangle(50, 50, 100, 100); // x, y, width, height
         rect.setFill(Color.BLUE);
 
