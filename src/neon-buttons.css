@@ -1,0 +1,56 @@
+/* Base neon button style */
+.neon-button-cyan, .neon-button-pink, .neon-button-green {
+    -fx-font-size: 25px;
+    -fx-font-family: "Arial";
+    -fx-text-fill: #ffffff;
+    -fx-background-color: transparent;
+    -fx-border-width: 2.5px;
+    -fx-border-radius: 6px;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, #ffffff, 10, 0.0, 0, 0);
+    -fx-transition: all 0.3s ease;
+}
+
+/* Cyan Neon Button */
+.neon-button-cyan {
+    -fx-border-color: #00f0ff;
+    -fx-text-fill: #00f0ff;
+    -fx-effect: dropshadow(gaussian, #00f0ff, 15, 0.3, 0, 0);
+}
+
+.neon-button-cyan:hover {
+    -fx-background-color: #00f0ff33;
+    -fx-effect: dropshadow(gaussian, #00f0ff, 20, 0.7, 0, 0);
+    -fx-text-fill: #000000;
+}
+
+.neon-button-cyan:pressed {
+    -fx-effect: dropshadow(gaussian, #00f0ff, 10, 0.5, 0, 0);
+}
+
+/* Pink Neon Button */
+.neon-button-pink {
+    -fx-border-color: #ff00ff;
+    -fx-text-fill: #ff00ff;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 15, 0.3, 0, 0);
+}
+
+.neon-button-pink:hover {
+    -fx-background-color: #ff00ff33;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 20, 0.7, 0, 0);
+    -fx-text-fill: #000000;
+}
+
+.neon-button-pink:pressed {
+    -fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.5, 0, 0);
+}
+
+@keyframes pulse {
+    0% { -fx-effect: dropshadow(gaussian, #00f0ff, 15, 0.7, 0, 0); }
+    50% { -fx-effect: dropshadow(gaussian, #00f0ff, 25, 0.9, 0, 0); }
+    100% { -fx-effect: dropshadow(gaussian, #00f0ff, 15, 0.7, 0, 0); }
+}
+.neon-button-cyan {
+    -fx-animation: pulse 2s infinite;
+}
