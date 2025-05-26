@@ -9,16 +9,19 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+
 
 public class Racing_Game extends Application {
     private static final int INITIAL_OBSTACLES_PER_ROAD = 5;
     private static final double OBSTACLE_INCREMENT_DISTANCE = 2000;
     private static final int MAX_OBSTACLES_PER_ROAD = 10;
+    private static final int Max_Items_Per_Cars=4;
 
     private Pane root;
     Set<KeyCode> pressedkeys = new HashSet<>();
@@ -51,10 +54,22 @@ public class Racing_Game extends Application {
     Rectangle finishLine2;
 
     AnimationTimer timer;
+    MediaPlayer player;
 
     public void start(Stage stage) {
         root = new Pane();
         Scene scene = new Scene(root, screenWidth, screenHeight);
+
+        Media media = new Media(getClass().getResource("/resources/musics/Wendsday.mp3").toExternalForm());
+        player = new MediaPlayer(media);
+        player.setCycleCount(MediaPlayer.INDEFINITE);
+        player.setVolume(1.0);
+        player.setOnReady(() -> {
+            player.play();
+        });
+
+
+
 
         scene.setOnKeyPressed(e -> pressedkeys.add(e.getCode()));
         scene.setOnKeyReleased(e -> pressedkeys.remove(e.getCode()));
