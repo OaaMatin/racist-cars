@@ -128,5 +128,18 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
+
+        /*
+
+    Time trial mode : 3 new item: time , booster , double point
+    endless mode: scores until user presses something
+    highway mode: 3 side is moving car , 3 other lane
+
+    shop: new car styles.
+    new currencies : coins
+
+     */
+
+
     }
 }

@@ -21,16 +21,21 @@ public class Cars {
 
         if (kc.contains(KeyCode.A) && Control_car1 > 1) {
             transition.setByX(-screenWidth * 0.08);
+            car1.setRotate(-15);
             Control_car1--;
         } else if (kc.contains(KeyCode.D) && Control_car1 < 5) {  // Changed from < 6 to < 5
             transition.setByX(screenWidth * 0.08);
+            car1.setRotate(15);
             Control_car1++;
         } else {
             return;
         }
 
         car1_ismoving.set(true);
-        transition.setOnFinished(e -> car1_ismoving.set(false));
+        transition.setOnFinished(e ->{
+            car1_ismoving.set(false);
+            car1.setRotate(0);
+        });
         transition.play();
     }
 
@@ -44,16 +49,25 @@ public class Cars {
 
         if (kc.contains(KeyCode.LEFT) && Control_car2 > 1) {
             transition.setByX(-screenWidth * 0.08);
+            car2.setRotate(-15);
             Control_car2--;
+
         } else if (kc.contains(KeyCode.RIGHT) && Control_car2 < 5) {
             transition.setByX(screenWidth * 0.08);
+            car2.setRotate(15);
             Control_car2++;
         } else {
             return;
         }
 
+
         car2_ismoving.set(true);
-        transition.setOnFinished(e -> car2_ismoving.set(false));
+        transition.setOnFinished(e ->{
+            car2_ismoving.set(false);
+            car2.setRotate(0);
+            // CopyRighted by 8HP
+        });
+
         transition.play();
     }
 

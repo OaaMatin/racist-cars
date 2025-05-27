@@ -60,7 +60,7 @@ public class Racing_Game extends Application {
         root = new Pane();
         Scene scene = new Scene(root, screenWidth, screenHeight);
 
-        Media media = new Media(getClass().getResource("/resources/musics/Wendsday.mp3").toExternalForm());
+        Media media = new Media(getClass().getResource("/resources/musics/Gorilaz.mp3").toExternalForm());
         player = new MediaPlayer(media);
         player.setCycleCount(MediaPlayer.INDEFINITE);
         player.setVolume(1.0);
@@ -80,7 +80,7 @@ public class Racing_Game extends Application {
 
         try {
             Image car1Image = new Image("resources/pictures/car1skin1.png");
-            Image car2Image = new Image("resources/pictures/car1skin2.png");
+            Image car2Image = new Image("resources/pictures/arya'scar.png");
 
             car1 = new ImageView(car1Image);
             car2 = new ImageView(car2Image);
@@ -128,6 +128,7 @@ public class Racing_Game extends Application {
                 if (!gameOver) {
                     Cars.move1(car1, pressedkeys, car1_ismoving);
                     Cars.move2(car2, pressedkeys, car2_ismoving);
+
                     update();
                     if (distance1 >= finishDistance) {
                         System.out.println("Car 1 wins!");

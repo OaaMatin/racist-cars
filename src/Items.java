@@ -7,9 +7,10 @@ public class Items {
     public ImageView Item;
  public Items(int Lane){
      this.Lane=Lane;
-           Rectangle2D Bounds= Screen.getPrimary().getBounds();
+     Rectangle2D Bounds= Screen.getPrimary().getBounds();
      double screenWidth = Bounds.getWidth();
     }
+
 
 
 }

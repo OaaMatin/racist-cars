@@ -29,7 +29,7 @@ public class Objects {
 
             obstacle = new ImageView(obstacleImage);
             obstacle.setFitWidth(screenWidth / 20);
-            obstacle.setFitHeight(screenWidth / 16);
+            obstacle.setFitHeight(screenWidth / 20);
 
             if (Lane < 5) {
                 obstacle.setX(screenWidth * (0.06 + 0.08 * Lane));
@@ -51,5 +51,8 @@ public class Objects {
     public int getLane() {
         return this.Lane;
     }
+
+
+
 
 }
