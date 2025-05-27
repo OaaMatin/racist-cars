@@ -1,4 +1,7 @@
+<<<<<<< HEAD
+=======
 import javafx.scene.effect.DropShadow;
+>>>>>>> 6c224e63c9a249fc0f107f1c97d2e2e5181e3c66
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -9,7 +12,10 @@ import java.util.List;
 public class RoadMap extends Pane {
     double width;
     double height;
+<<<<<<< HEAD
+=======
 
+>>>>>>> 6c224e63c9a249fc0f107f1c97d2e2e5181e3c66
     double grassWidth;
     double roadWidth;
     double laneWidth;
@@ -19,19 +25,34 @@ public class RoadMap extends Pane {
     public RoadMap(double width, double height) {
         this.width = width;
         this.height = height;
+<<<<<<< HEAD
+=======
 
+>>>>>>> 6c224e63c9a249fc0f107f1c97d2e2e5181e3c66
         grassWidth = width * 0.1;
         roadWidth = width * 0.8;
         laneWidth = roadWidth / 5;
 
         Rectangle leftGrass = new Rectangle(0, 0, grassWidth, height);
-        leftGrass.setFill(Color.web("#ab9cb8"));
+<<<<<<< HEAD
+        leftGrass.setFill(Color.GREEN);
+
+        Rectangle road = new Rectangle(grassWidth, 0, roadWidth, height);
+        road.setFill(Color.GRAY);
+
+        Rectangle rightGrass = new Rectangle(grassWidth + roadWidth, 0, grassWidth, height);
+        rightGrass.setFill(Color.GREEN);
+
+        getChildren().addAll(leftGrass, road, rightGrass);
+
+=======
+        leftGrass.setFill(Color.CYAN);
 
         Rectangle road = new Rectangle(grassWidth, 0, roadWidth, height);
         road.setFill(Color.web("#1F1B24"));
 
         Rectangle rightGrass = new Rectangle(grassWidth + roadWidth, 0, grassWidth, height);
-        rightGrass.setFill(Color.web("#ab9cb8"));
+        rightGrass.setFill(Color.CYAN);
 
         getChildren().addAll(leftGrass, road, rightGrass);
 
@@ -39,12 +60,17 @@ public class RoadMap extends Pane {
         glow.setColor(Color.web("#00FFFF"));
         glow.setRadius(10);
 
+>>>>>>> 6c224e63c9a249fc0f107f1c97d2e2e5181e3c66
         for (int i = 1; i < 5; i++) {
             double x = grassWidth + i * laneWidth;
             for (int j = 0; j < 10; j++) {
                 Rectangle dash = new Rectangle(x - 2, j * 100, 4, 40);
+<<<<<<< HEAD
+                dash.setFill(Color.WHITE);
+=======
                 dash.setFill(Color.web("#FF00FF"));
                 dash.setEffect(glow);
+>>>>>>> 6c224e63c9a249fc0f107f1c97d2e2e5181e3c66
                 laneLines.add(dash);
                 getChildren().add(dash);
             }
@@ -68,4 +94,8 @@ public class RoadMap extends Pane {
             }
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 6c224e63c9a249fc0f107f1c97d2e2e5181e3c66
