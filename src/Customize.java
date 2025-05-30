@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -109,10 +109,5 @@ public class Customize {
     public StackPane getSelectedPane() {
         return imagePanes[currentRow][currentCol];
     }
-=======
-import javafx.stage.Stage;
-
-public class Customize {
-    public static void start(Stage stage) {}
->>>>>>> 6c224e63c9a249fc0f107f1c97d2e2e5181e3c66
 }
+
