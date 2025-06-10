@@ -1,12 +1,12 @@
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.scene.control.Button;
 
 public class Main extends Application {
     double screenWidth = Screen.getPrimary().getBounds().getWidth();
@@ -40,8 +40,8 @@ public class Main extends Application {
         pane.getChildren().add(imageView);
 
         startBtn.setOnAction(e -> {
-            Racing_Game racing_game = new Racing_Game();
-            racing_game.start(primaryStage);
+            Customize customize = new Customize();
+            customize.start(primaryStage);
 
         });
 
