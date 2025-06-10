@@ -1,3 +1,7 @@
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -5,16 +9,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 
 
 public class Racing_Game extends Application {
@@ -23,6 +23,13 @@ public class Racing_Game extends Application {
     private static final int MAX_OBSTACLES_PER_ROAD = 10;
     private static final int Max_Items_Per_Cars=4;
 
+    private String car1ImagePath;
+    private String car2ImagePath;
+
+    public Racing_Game(String car1Path, String car2Path) {
+        this.car1ImagePath = car1Path;
+        this.car2ImagePath = car2Path;
+    }
     private Pane root;
     Set<KeyCode> pressedkeys = new HashSet<>();
 
@@ -60,13 +67,19 @@ public class Racing_Game extends Application {
         root = new Pane();
         Scene scene = new Scene(root, screenWidth, screenHeight);
 
-        Media media = new Media(getClass().getResource("/resources/musics/Wendsday.mp3").toExternalForm());
+        Media media = new Media(getClass().getResource("/resources/musics/Gorilaz.mp3").toExternalForm());
         player = new MediaPlayer(media);
         player.setCycleCount(MediaPlayer.INDEFINITE);
         player.setVolume(1.0);
         player.setOnReady(() -> {
             player.play();
         });
+        stage.setOnCloseRequest(e -> {
+            if (player != null) {
+                player.stop();
+            }
+        });
+        
 
 
 
@@ -79,10 +92,11 @@ public class Racing_Game extends Application {
         map2.setLayoutX(screenWidth / 2);
 
         try {
-            Image car1Image = new Image("resources/pictures/car1skin1.png");
-            Image car2Image = new Image("resources/pictures/car1skin2.png");
-
-            car1 = new ImageView(car1Image);
+           
+            Image car1Image = new Image(car1ImagePath);
+            car1 = new ImageView(car1Image); 
+        
+            Image car2Image = new Image(car2ImagePath);
             car2 = new ImageView(car2Image);
 
             car1.setFitWidth(screenWidth / 20);
