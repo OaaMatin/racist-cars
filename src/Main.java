@@ -7,10 +7,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import java.io.File;
 
 public class Main extends Application {
     double screenWidth = Screen.getPrimary().getBounds().getWidth();
     double screenHeight = Screen.getPrimary().getBounds().getHeight();
+    private MediaPlayer mediaPlayer;
 
     public void start(Stage primaryStage) {
         Image image = new Image("resources/pictures/background_wall.png");
@@ -20,6 +24,12 @@ public class Main extends Application {
         ImageView imageView = new ImageView(image2);
         imageView.setFitWidth(500);
         imageView.setPreserveRatio(true);
+
+        String musicFile = "src/resources/musics/Light_of_the_Seven.mp3";
+        Media media = new Media(new File(musicFile).toURI().toString());
+        mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+        mediaPlayer.play();
 
         Button startBtn = new Button("Start");
         startBtn.getStyleClass().add("neon-button-cyan");
@@ -40,17 +50,15 @@ public class Main extends Application {
         pane.getChildren().add(imageView);
 
         startBtn.setOnAction(e -> {
+            mediaPlayer.stop();
             Customize customize = new Customize();
             customize.start(primaryStage);
-
         });
 
         exitBtn.setOnAction(e -> {
             Stage stage = (Stage) exitBtn.getScene().getWindow();
             stage.close();
-
         });
-
 
         Scene scene = new Scene(pane, screenWidth, screenHeight);
         scene.widthProperty().addListener((obs, oldVal, newVal) -> centerImage(imageView, scene));
@@ -66,31 +74,16 @@ public class Main extends Application {
             startBtn.setLayoutX((screenWidth - cyanWidth) / 2);
             exitBtn.setLayoutX((screenWidth - pinkWidth) / 2);
         });
-
         centerImage(imageView, scene);
     }
 
     private void centerImage(ImageView imageView, Scene scene) {
         double centerX = (scene.getWidth() - imageView.getFitWidth()) / 2;
         imageView.setX(centerX);
-
     }
 
     public static void main(String[] args) {
         launch(args);
-
-        /*
-
-    Time trial mode : 3 new item: time , booster , double point
-    endless mode: scores until user presses something
-    highway mode: 3 side is moving car , 3 other lane
-
-    shop: new car styles.
-    new currencies : coins
-
-     */
-
-
     }
 
 }
