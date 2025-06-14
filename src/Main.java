@@ -1,7 +1,11 @@
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -31,25 +35,66 @@ public class Main extends Application {
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         mediaPlayer.play();
 
-        Button startBtn = new Button("Start");
-        startBtn.getStyleClass().add("neon-button-cyan");
-        startBtn.setLayoutY(screenHeight * 0.8);
-        startBtn.setPrefWidth(150);
-        startBtn.setPrefHeight(60);
+        Button SinglePlayerBtn = new Button("Single Player");
+        SinglePlayerBtn.getStyleClass().add("neon-button-yellow");
+        SinglePlayerBtn.setLayoutY(screenHeight * 0.725);
+        SinglePlayerBtn.setPrefWidth(200);
+        SinglePlayerBtn.setPrefHeight(60);
+
+        Button MultiPlayerBtn = new Button("Multi Player");
+        MultiPlayerBtn.getStyleClass().add("neon-button-cyan");
+        MultiPlayerBtn.setLayoutY(screenHeight * 0.815);
+        MultiPlayerBtn.setPrefWidth(200);
+        MultiPlayerBtn.setPrefHeight(60);
 
         Button exitBtn = new Button("Exit");
         exitBtn.getStyleClass().add("neon-button-pink");
         exitBtn.setLayoutY(screenHeight * 0.9);
-        exitBtn.setPrefWidth(150);
+        exitBtn.setPrefWidth(200);
         exitBtn.setPrefHeight(60);
+
+        Slider volumeSlider = new Slider(0, 1, mediaPlayer.getVolume());
+        mediaPlayer.volumeProperty().bind(volumeSlider.valueProperty());
+        volumeSlider.setLayoutX(10);
+        volumeSlider.setLayoutY(screenHeight * 0.8);
+        volumeSlider.setOrientation(Orientation.VERTICAL);
+        Label speakerLabel = new Label("\uD83D\uDD0A");
+        speakerLabel.setStyle("-fx-font-size: 25px; -fx-text-fill: white;");
+        volumeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+           double volume = newVal.doubleValue();
+           if (volume == 0){
+               speakerLabel.setText("\uD83D\uDD07");
+           }
+           else if(volume <= 0.3){
+               speakerLabel.setText("\uD83D\uDD08");
+           }
+           else if(volume <= 0.7){
+               speakerLabel.setText("\uD83D\uDD09");
+           }
+           else{
+               speakerLabel.setText("\uD83D\uDD0A");
+           }
+        });
+        VBox volumeControl = new VBox(5, volumeSlider, speakerLabel);
+        volumeControl.setAlignment(Pos.CENTER);
+        volumeControl.setLayoutX(5);
+        volumeControl.setLayoutY(screenHeight * 0.78);
 
         Pane pane = new Pane();
         pane.setBackground(new Background(backgroundImage));
-        pane.getChildren().add(startBtn);
+        pane.getChildren().add(SinglePlayerBtn);
+        pane.getChildren().add(MultiPlayerBtn);
         pane.getChildren().add(exitBtn);
         pane.getChildren().add(imageView);
+        pane.getChildren().add(volumeControl);
 
-        startBtn.setOnAction(e -> {
+        SinglePlayerBtn.setOnAction(e -> {
+            mediaPlayer.stop();
+            Single_Player_Customize single = new Single_Player_Customize();
+            single.start(primaryStage);
+        });
+
+        MultiPlayerBtn.setOnAction(e -> {
             mediaPlayer.stop();
             Customize customize = new Customize();
             customize.start(primaryStage);
@@ -69,10 +114,10 @@ public class Main extends Application {
         primaryStage.show();
 
         Platform.runLater(() -> {
-            double cyanWidth = startBtn.getWidth();
-            double pinkWidth = exitBtn.getWidth();
-            startBtn.setLayoutX((screenWidth - cyanWidth) / 2);
-            exitBtn.setLayoutX((screenWidth - pinkWidth) / 2);
+            double width = MultiPlayerBtn.getWidth();
+            SinglePlayerBtn.setLayoutX((screenWidth - width) / 2);
+            MultiPlayerBtn.setLayoutX((screenWidth - width) / 2);
+            exitBtn.setLayoutX((screenWidth - width) / 2);
         });
         centerImage(imageView, scene);
     }
