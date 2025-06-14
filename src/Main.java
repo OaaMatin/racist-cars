@@ -1,7 +1,10 @@
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -43,11 +46,23 @@ public class Main extends Application {
         exitBtn.setPrefWidth(150);
         exitBtn.setPrefHeight(60);
 
+        Slider volumeSlider = new Slider(0, 1, mediaPlayer.getVolume());
+        mediaPlayer.volumeProperty().bind(volumeSlider.valueProperty());
+        volumeSlider.setLayoutX(10);
+        volumeSlider.setLayoutY(screenHeight * 0.8);
+        volumeSlider.setOrientation(Orientation.VERTICAL);
+        Label speakerLabel = new Label("\uD83D\uDD0A");
+        speakerLabel.setStyle("-fx-font-size: 25px; -fx-text-fill: white;");
+        speakerLabel.setLayoutX(5);
+        speakerLabel.setLayoutY(screenHeight * 0.958);
+
         Pane pane = new Pane();
         pane.setBackground(new Background(backgroundImage));
         pane.getChildren().add(startBtn);
         pane.getChildren().add(exitBtn);
         pane.getChildren().add(imageView);
+        pane.getChildren().add(volumeSlider);
+        pane.getChildren().add(speakerLabel);
 
         startBtn.setOnAction(e -> {
             mediaPlayer.stop();
