@@ -1,11 +1,11 @@
 /* Base neon button style */
-.neon-button-cyan, .neon-button-pink, .neon-button-green {
+.neon-button-cyan, .neon-button-pink, .neon-button-yellow {
     -fx-font-size: 25px;
     -fx-font-family: "Arial";
     -fx-text-fill: #ffffff;
     -fx-background-color: transparent;
     -fx-border-width: 2.5px;
-    -fx-border-radius: 6px;
+    -fx-border-radius: 16px;
     -fx-padding: 10 20;
     -fx-cursor: hand;
     -fx-effect: dropshadow(gaussian, #ffffff, 10, 0.0, 0, 0);
@@ -20,7 +20,8 @@
 }
 
 .neon-button-cyan:hover {
-    -fx-background-color: #00f0ff33;
+    -fx-background-color: #00f0ff30;
+    -fx-background-radius: 16px;
     -fx-effect: dropshadow(gaussian, #00f0ff, 20, 0.7, 0, 0);
     -fx-text-fill: #000000;
 }
@@ -37,13 +38,32 @@
 }
 
 .neon-button-pink:hover {
-    -fx-background-color: #ff00ff33;
+    -fx-background-color: #ff00ff30;
+    -fx-background-radius: 16px;
     -fx-effect: dropshadow(gaussian, #ff00ff, 20, 0.7, 0, 0);
     -fx-text-fill: #000000;
 }
 
 .neon-button-pink:pressed {
     -fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.5, 0, 0);
+}
+
+/* Pink Neon Button */
+.neon-button-yellow {
+    -fx-border-color: #E8BC5F;
+    -fx-text-fill: #E8BC5F;
+    -fx-effect: dropshadow(gaussian, #E8BC5F, 15, 0.3, 0, 0);
+}
+
+.neon-button-yellow:hover {
+    -fx-background-color: #E8BC5F30;
+    -fx-background-radius: 16px;
+    -fx-effect: dropshadow(gaussian, #E8BC5F, 20, 0.7, 0, 0);
+    -fx-text-fill: #000000;
+}
+
+.neon-button-yellow:pressed {
+    -fx-effect: dropshadow(gaussian, #E8BC5F, 10, 0.5, 0, 0);
 }
 
 @keyframes pulse {

@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 import java.util.List;
 import javafx.application.Application;
@@ -20,7 +19,6 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class Customize extends Application {
-
     private int selectedIndexCar1 = 0;
     private int selectedIndexCar2 = 0;
     private Rectangle selectCar1;
