@@ -16,38 +16,28 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-
 public class Racing_Game extends Application {
     private static final int INITIAL_OBSTACLES_PER_ROAD = 5;
     private static final double OBSTACLE_INCREMENT_DISTANCE = 2000;
     private static final int MAX_OBSTACLES_PER_ROAD = 10;
-    private static final int Max_Items_Per_Cars=4;
-
     private String car1ImagePath;
     private String car2ImagePath;
-
     public Racing_Game(String car1Path, String car2Path) {
         this.car1ImagePath = car1Path;
         this.car2ImagePath = car2Path;
     }
     private Pane root;
     Set<KeyCode> pressedkeys = new HashSet<>();
-
     double screenWidth = Screen.getPrimary().getBounds().getWidth();
     double screenHeight = Screen.getPrimary().getBounds().getHeight();
-
     ArrayList<Objects> obstacles1 = new ArrayList<>();
     ArrayList<Objects> obstacles2 = new ArrayList<>();
-
     AtomicBoolean car1_ismoving = new AtomicBoolean(false);
     AtomicBoolean car2_ismoving = new AtomicBoolean(false);
-
     RoadMap map1;
     RoadMap map2;
-
     ImageView car1;
     ImageView car2;
-
     double velocity1 = 0;
     double velocity2 = 0;
     double acceleration = 0.03;
@@ -56,10 +46,8 @@ public class Racing_Game extends Application {
     double distance2 = 0;
     final double finishDistance = 30000;
     boolean gameOver = false;
-
     Rectangle finishLine1;
     Rectangle finishLine2;
-
     AnimationTimer timer;
     MediaPlayer player;
 
@@ -79,11 +67,6 @@ public class Racing_Game extends Application {
                 player.stop();
             }
         });
-        
-
-
-
-
         scene.setOnKeyPressed(e -> pressedkeys.add(e.getCode()));
         scene.setOnKeyReleased(e -> pressedkeys.remove(e.getCode()));
 
@@ -92,10 +75,9 @@ public class Racing_Game extends Application {
         map2.setLayoutX(screenWidth / 2);
 
         try {
-           
             Image car1Image = new Image(car1ImagePath);
-            car1 = new ImageView(car1Image); 
-        
+            car1 = new ImageView(car1Image);
+
             Image car2Image = new Image(car2ImagePath);
             car2 = new ImageView(car2Image);
 
@@ -155,7 +137,6 @@ public class Racing_Game extends Application {
                 }
             }
         };
-
         timer.start();
 
         stage.setTitle("Racing Game");
@@ -179,10 +160,10 @@ public class Racing_Game extends Application {
         distance1 += velocity1;
         distance2 += velocity2;
 
-        int desiredObstacles1 = INITIAL_OBSTACLES_PER_ROAD + (int)(distance1 / OBSTACLE_INCREMENT_DISTANCE);
+        int desiredObstacles1 = INITIAL_OBSTACLES_PER_ROAD + (int) (distance1 / OBSTACLE_INCREMENT_DISTANCE);
         desiredObstacles1 = Math.min(desiredObstacles1, MAX_OBSTACLES_PER_ROAD);
         while (obstacles1.size() < desiredObstacles1) {
-            int randomLane1 = (int)(Math.random() * 5);
+            int randomLane1 = (int) (Math.random() * 5);
             boolean tooClose = false;
             for (Objects existing : obstacles1) {
                 if (existing.getLane() == randomLane1 &&
@@ -199,10 +180,10 @@ public class Racing_Game extends Application {
             }
         }
 
-        int desiredObstacles2 = INITIAL_OBSTACLES_PER_ROAD + (int)(distance2 / OBSTACLE_INCREMENT_DISTANCE);
+        int desiredObstacles2 = INITIAL_OBSTACLES_PER_ROAD + (int) (distance2 / OBSTACLE_INCREMENT_DISTANCE);
         desiredObstacles2 = Math.min(desiredObstacles2, MAX_OBSTACLES_PER_ROAD);
         while (obstacles2.size() < desiredObstacles2) {
-            int randomLane2 = 5 + (int)(Math.random() * 5);
+            int randomLane2 = 5 + (int) (Math.random() * 5);
             boolean tooClose = false;
             for (Objects existing : obstacles2) {
                 if (existing.getLane() == randomLane2 &&
@@ -241,9 +222,8 @@ public class Racing_Game extends Application {
                             }
                         }
                     }
-                    if (suitable) {
+                    if (suitable)
                         iv.setY(candidateY);
-                    }
                     attempts++;
                 }
                 if (!suitable) {
@@ -252,17 +232,15 @@ public class Racing_Game extends Application {
                     for (Objects other : obstacles1) {
                         if (other != obj && other.getLane() == lane) {
                             double otherY = other.getObstacle().getY();
-                            if (otherY < minY) {
+                            if (otherY < minY)
                                 minY = otherY;
-                            }
                             hasOther = true;
                         }
                     }
-                    if (hasOther) {
+                    if (hasOther)
                         iv.setY(minY - obstacleHeight - gap);
-                    } else {
+                    else
                         iv.setY(-Math.random() * 2000);
-                    }
                 }
             }
         }
@@ -289,9 +267,8 @@ public class Racing_Game extends Application {
                             }
                         }
                     }
-                    if (suitable) {
+                    if (suitable)
                         iv.setY(candidateY);
-                    }
                     attempts++;
                 }
                 if (!suitable) {
@@ -300,17 +277,15 @@ public class Racing_Game extends Application {
                     for (Objects other : obstacles2) {
                         if (other != obj && other.getLane() == lane) {
                             double otherY = other.getObstacle().getY();
-                            if (otherY < minY) {
+                            if (otherY < minY)
                                 minY = otherY;
-                            }
                             hasOther = true;
                         }
                     }
-                    if (hasOther) {
+                    if (hasOther)
                         iv.setY(minY - obstacleHeight - gap);
-                    } else {
+                    else
                         iv.setY(-Math.random() * 2000);
-                    }
                 }
             }
         }

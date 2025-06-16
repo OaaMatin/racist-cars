@@ -4,7 +4,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Screen;
 import javafx.util.Duration;
-
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -17,7 +16,6 @@ public class Cars {
 
         Rectangle2D bounds = Screen.getPrimary().getBounds();
         double screenWidth = bounds.getWidth();
-
         TranslateTransition transition = new TranslateTransition(Duration.seconds(0.2), car1);
 
         if (kc.contains(KeyCode.A) && Control_car1 > 1) {
@@ -28,9 +26,7 @@ public class Cars {
             car1.setRotate(15);
             transition.setByX(screenWidth * 0.08);
             Control_car1++;
-        } else {
-            return;
-        }
+        } else return;
 
         car1_ismoving.set(true);
         transition.setOnFinished(e -> {
@@ -56,16 +52,13 @@ public class Cars {
             car2.setRotate(15);
             transition.setByX(screenWidth * 0.08);
             Control_car2++;
-        } else {
-            return;
-        }
+        } else return;
+
         car2_ismoving.set(true);
         transition.setOnFinished(e -> {
             car2_ismoving.set(false);
             car2.setRotate(0);
         });
         transition.play();
-
-
     }
 }

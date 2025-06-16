@@ -111,6 +111,7 @@ public class Main extends Application {
         scene.getStylesheets().add("resources/CSS/neon-buttons.css");
         primaryStage.setTitle("Home");
         primaryStage.setScene(scene);
+        primaryStage.setFullScreen(true);
         primaryStage.show();
 
         Platform.runLater(() -> {
