@@ -1,7 +1,5 @@
 # Racist Cars — Measuring & Mitigating Bias in Car-Centric Computer Vision
 
-> **Goal:** Evaluate whether common computer-vision pipelines (e.g., pedestrian detection around cars, license-plate/driver detection, car color/model classification) behave differently across demographic or environmental groups, and provide tools to diagnose and reduce that bias.
-
 ---
 
 ## ✨ What’s inside
@@ -21,9 +19,6 @@ We use the term “racist cars” to critique biased systems—not to endorse th
 ---
 
 ## 🗂 Project structure
-
-
-> If you imported this as an IntelliJ IDEA project (`*.iml` present), code likely lives under `src/`. Adjust paths above as needed.
 
 ---
 
