@@ -22,3 +22,35 @@ We use the term “racist cars” to critique biased systems—not to endorse th
 
 ## 🗂 Project structure
 
+
+> If you imported this as an IntelliJ IDEA project (`*.iml` present), code likely lives under `src/`. Adjust paths above as needed.
+
+---
+
+## 🚀 Getting started
+
+### 1) Prerequisites
+
+- **Option A (Java/Kotlin stack)**  
+  - JDK 17+  
+  - Gradle or Maven  
+  - (Optional) OpenCV/DeepLearning frameworks via JNI bindings
+
+- **Option B (Python stack)**  
+  - Python 3.10+  
+  - `pip install -r requirements.txt`  🔧 create this file if using Python  
+  - Common libs: `numpy`, `pandas`, `scikit-learn`, `torch`/`tensorflow`, `matplotlib`
+
+### 2) Setup
+
+```bash
+# clone
+git clone https://github.com/OaaMatin/racist-cars
+cd racist-cars
+
+# Java (Gradle) 🔧
+./gradlew build
+
+# OR Python 🔧
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
