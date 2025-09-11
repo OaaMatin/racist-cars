@@ -2,7 +2,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -117,7 +116,6 @@ public class Racing_Game {
             car2.setLayoutY(screenHeight * 0.8);
         } catch (Exception e) {
             e.printStackTrace();
-            // If images fail to load, return the scene without car.
         }
 
         finishLine1 = new Rectangle(map1.getLayoutX() + map1.grassWidth, 0, map1.roadWidth, 8);
@@ -144,13 +142,13 @@ public class Racing_Game {
         }
 
         Button backBtn = new Button("Back");
-        backBtn.setStyle("-fx-background-color:#e53935; -fx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 20px; -fx-cursor: hand");
-        backBtn.setPrefSize(150, 40);
+        backBtn.setStyle("-fx-background-color:#8e55ad; -fx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 20px; -fx-cursor: hand");
+        backBtn.setPrefSize(100, 30);
         backBtn.setLayoutX((screenWidth - backBtn.getPrefWidth()) / 2);
         backBtn.setLayoutY(screenHeight - backBtn.getPrefHeight() - 16);
         backBtn.setFocusTraversable(false);
         backBtn.setOnAction(e -> {
-            cleanup();                 // stop timer & music
+            cleanup();
             stage.setScene(customizeScene);
         });
         root.getChildren().add(backBtn);
