@@ -61,12 +61,12 @@ public class Customize extends Application {
         String[] imageUrlsCar1 = {
                 "resources/pictures/car1skin1.png",
                 "resources/pictures/car1skin2.png",
+                "resources/pictures/skin11.png",
+                "resources/pictures/arya'scar.png",
                 "resources/pictures/car1.png",
                 "resources/pictures/car2.png",
-                "resources/pictures/arya'scar.png",
-                "resources/pictures/car4.png",
                 "resources/pictures/car3.png",
-                "resources/pictures/car1skin2.png"
+                "resources/pictures/car4.png",
         };
 
         for (int row = 0; row < 2; row++) {
@@ -173,7 +173,15 @@ public class Customize extends Application {
 
         VBox content = new VBox(20);
         content.setPadding(new Insets(0, 50, 30, 50));
-        content.setStyle("-fx-background-color:rgb(68, 7, 53);");
+        Image bgImage = new Image(getClass().getResource("resources/pictures/background3.jpeg").toExternalForm());
+        BackgroundImage backgroundImage = new BackgroundImage(
+                bgImage,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true) // متناسب با اندازه VBox
+        );
+        content.setBackground(new Background(backgroundImage));
         content.setAlignment(Pos.TOP_CENTER);
         content.getChildren().addAll(mainLabel, rectanglesBox);
         StackPane root = new StackPane(content);
@@ -339,7 +347,9 @@ public class Customize extends Application {
             for (Node node : root.getChildren())
                 node.setOpacity(0.2);
             Button startBtn = new Button("Start Game");
+            startBtn.setPrefSize(150,40);
             Button cancelBtn = new Button("Cancel");
+            cancelBtn.setPrefSize(150,40);
 
             startBtn.setStyle("-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-size: 20px; -fx-background-radius: 15px;");
             cancelBtn.setStyle("-fx-background-color: #c0392b; -fx-text-fill: white; -fx-font-size: 20px; -fx-background-radius: 15px;");
