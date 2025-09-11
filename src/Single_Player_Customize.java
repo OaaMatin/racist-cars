@@ -1,6 +1,6 @@
+
 import java.util.ArrayList;
 import java.util.List;
-
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -20,6 +20,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class Single_Player_Customize extends Application {
+
     private int selectedIndexCar = 0;
     private Rectangle selectCar;
     private Button readyCar;
@@ -52,7 +53,14 @@ public class Single_Player_Customize extends Application {
         double cellWidth = 150.0;
         double cellHeight = 300.0;
 
-        String[] imageUrlsCar = {"resources/pictures/car1skin1.png", "resources/pictures/car1skin2.png", "resources/pictures/car1.png", "resources/pictures/car2.png", "resources/pictures/arya'scar.png", "resources/pictures/car4.png", "resources/pictures/car3.png", "resources/pictures/skin11.png"};
+        String[] imageUrlsCar = {"resources/pictures/car1skin1.png",
+            "resources/pictures/car1skin2.png",
+            "resources/pictures/car1.png",
+            "resources/pictures/car2.png",
+            "resources/pictures/arya'scar.png",
+            "resources/pictures/car4.png",
+            "resources/pictures/car3.png",
+            "resources/pictures/skin11.png"};
 
         for (int row = 0; row < 2; row++) {
             for (int col = 0; col < 4; col++) {
@@ -117,16 +125,21 @@ public class Single_Player_Customize extends Application {
         });
 
         Button backButton = new Button("Back");
-        backButton.setStyle("-fx-background-color:#e53935; -fx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 20px; -fx-cursor: hand");
-        backButton.setPrefSize(150, 40);
+        backButton.setStyle("-fx-background-color:#8e44ad; -fx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 20px; -fx-cursor: hand");
+        backButton.setPrefSize(100, 40);
 
 
-        StackPane.setAlignment(backButton, Pos.BOTTOM_CENTER);
-        StackPane.setMargin(backButton, new Insets(0, 0, 12, 0));
+        StackPane.setAlignment(backButton, Pos.BOTTOM_LEFT);
+        StackPane.setMargin(backButton, new Insets(0, 0, 10, 10));
         root.getChildren().add(backButton);
 
         backButton.setOnAction(e -> {
-            new Main().start(primaryStage);
+            Main mainMenu = new Main();
+            try {
+                mainMenu.start(primaryStage);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         });
 
         Scene scene = new Scene(root, screenWidth, screenHeight);
@@ -170,8 +183,11 @@ public class Single_Player_Customize extends Application {
                 readyCar.setText(isCarReady ? "You're Ready!" : "Ready!");
                 checkIfReady(root);
             } else if (startCancelBox != null) {
-                if (code == KeyCode.UP || code == KeyCode.DOWN) selectedBtnIndex = (selectedBtnIndex == 0) ? 1 : 0;
-                else if (code == KeyCode.ENTER) ((Button) startCancelBox.getChildren().get(selectedBtnIndex)).fire();
+                if (code == KeyCode.UP || code == KeyCode.DOWN) {
+                    selectedBtnIndex = (selectedBtnIndex == 0) ? 1 : 0;
+                } else if (code == KeyCode.ENTER) {
+                    ((Button) startCancelBox.getChildren().get(selectedBtnIndex)).fire();
+                }
             }
         });
 
@@ -202,12 +218,13 @@ public class Single_Player_Customize extends Application {
 
     private void checkIfReady(Pane root) {
         if (isCarReady && startCancelBox == null) {
-            for (Node node : root.getChildren())
+            for (Node node : root.getChildren()) {
                 node.setOpacity(0.2);
+            }
             Button startBtn = new Button("Start");
-            startBtn.setPrefSize(150,40);
+            startBtn.setPrefSize(150, 40);
             Button cancelBtn = new Button("Cancel");
-            cancelBtn.setPrefSize(150,40);
+            cancelBtn.setPrefSize(150, 40);
 
             startBtn.setStyle("-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-size: 20px; -fx-background-radius: 15px;");
             cancelBtn.setStyle("-fx-background-color: #c0392b; -fx-text-fill: white; -fx-font-size: 20px; -fx-background-radius: 15px;");
@@ -225,8 +242,9 @@ public class Single_Player_Customize extends Application {
             selectedBtnIndex = 0;
 
             startBtn.setOnAction(e -> {
-                Single_Player single_player = new Single_Player(selectedImageCarPath);
                 try {
+                    Single_Player single_player = new Single_Player();
+                    single_player.setCarImagePath(selectedImageCarPath);
                     single_player.start(new Stage());
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -236,8 +254,9 @@ public class Single_Player_Customize extends Application {
             cancelBtn.setOnAction(e -> {
                 root.getChildren().remove(startCancelBox);
                 startCancelBox = null;
-                for (Node node : root.getChildren())
+                for (Node node : root.getChildren()) {
                     node.setOpacity(1);
+                }
                 isCarReady = false;
                 readyCar.setText("Ready!");
                 root.requestFocus();
