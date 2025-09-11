@@ -13,11 +13,10 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+
 import java.io.File;
 
 public class Main extends Application {
-    double screenWidth = Screen.getPrimary().getBounds().getWidth();
-    double screenHeight = Screen.getPrimary().getBounds().getHeight();
     private MediaPlayer mediaPlayer;
 
     public void start(Stage primaryStage) {
@@ -37,91 +36,84 @@ public class Main extends Application {
 
         Button SinglePlayerBtn = new Button("Single Player");
         SinglePlayerBtn.getStyleClass().add("neon-button-yellow");
-        SinglePlayerBtn.setLayoutY(screenHeight * 0.725);
-        SinglePlayerBtn.setPrefWidth(200);
-        SinglePlayerBtn.setPrefHeight(60);
+        SinglePlayerBtn.setPrefSize(200, 60);
 
         Button MultiPlayerBtn = new Button("Multi Player");
         MultiPlayerBtn.getStyleClass().add("neon-button-cyan");
-        MultiPlayerBtn.setLayoutY(screenHeight * 0.815);
-        MultiPlayerBtn.setPrefWidth(200);
-        MultiPlayerBtn.setPrefHeight(60);
+        MultiPlayerBtn.setPrefSize(200, 60);
 
         Button exitBtn = new Button("Exit");
         exitBtn.getStyleClass().add("neon-button-pink");
-        exitBtn.setLayoutY(screenHeight * 0.9);
-        exitBtn.setPrefWidth(200);
-        exitBtn.setPrefHeight(60);
+        exitBtn.setPrefSize(200, 60);
 
-        Slider volumeSlider = new Slider(0, 1, mediaPlayer.getVolume());
-        mediaPlayer.volumeProperty().bind(volumeSlider.valueProperty());
-        volumeSlider.setLayoutX(10);
-        volumeSlider.setLayoutY(screenHeight * 0.8);
+        Slider volumeSlider = new Slider(0, 1, 0.5);
         volumeSlider.setOrientation(Orientation.VERTICAL);
+
         Label speakerLabel = new Label("\uD83D\uDD0A");
-        speakerLabel.setStyle("-fx-font-size: 25px; -fx-text-fill: white;");
-        volumeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-           double volume = newVal.doubleValue();
-           if (volume == 0){
-               speakerLabel.setText("\uD83D\uDD07");
-           }
-           else if(volume <= 0.3){
-               speakerLabel.setText("\uD83D\uDD08");
-           }
-           else if(volume <= 0.7){
-               speakerLabel.setText("\uD83D\uDD09");
-           }
-           else{
-               speakerLabel.setText("\uD83D\uDD0A");
-           }
-        });
+        speakerLabel.setStyle("-fx-font-size: 28px; -fx-text-fill: white;");
+
         VBox volumeControl = new VBox(5, volumeSlider, speakerLabel);
         volumeControl.setAlignment(Pos.CENTER);
-        volumeControl.setLayoutX(5);
-        volumeControl.setLayoutY(screenHeight * 0.78);
 
         Pane pane = new Pane();
         pane.setBackground(new Background(backgroundImage));
-        pane.getChildren().add(SinglePlayerBtn);
-        pane.getChildren().add(MultiPlayerBtn);
-        pane.getChildren().add(exitBtn);
-        pane.getChildren().add(imageView);
-        pane.getChildren().add(volumeControl);
+        pane.getChildren().addAll(SinglePlayerBtn, MultiPlayerBtn, exitBtn, imageView, volumeControl);
 
         SinglePlayerBtn.setOnAction(e -> {
             mediaPlayer.stop();
-            Single_Player_Customize single = new Single_Player_Customize();
-            single.start(primaryStage);
+            new Single_Player_Customize().start(primaryStage);
         });
-
         MultiPlayerBtn.setOnAction(e -> {
             mediaPlayer.stop();
-            Customize customize = new Customize();
-            customize.start(primaryStage);
+            new Customize().start(primaryStage);
         });
+        exitBtn.setOnAction(e -> ((Stage) exitBtn.getScene().getWindow()).close());
 
-        exitBtn.setOnAction(e -> {
-            Stage stage = (Stage) exitBtn.getScene().getWindow();
-            stage.close();
-        });
-
-        Scene scene = new Scene(pane, screenWidth, screenHeight);
-        scene.widthProperty().addListener((obs, oldVal, newVal) -> centerImage(imageView, scene));
-        scene.heightProperty().addListener((obs, oldVal, newVal) -> centerImage(imageView, scene));
+        Scene scene = new Scene(pane);
         scene.getStylesheets().add("resources/CSS/neon-buttons.css");
+
+        // Center buttons horizontally
+        SinglePlayerBtn.layoutXProperty().bind(scene.widthProperty().subtract(SinglePlayerBtn.widthProperty()).divide(2));
+        MultiPlayerBtn.layoutXProperty().bind(scene.widthProperty().subtract(MultiPlayerBtn.widthProperty()).divide(2));
+        exitBtn.layoutXProperty().bind(scene.widthProperty().subtract(exitBtn.widthProperty()).divide(2));
+
+        // Vertical positions as a fraction of the scene height
+        SinglePlayerBtn.layoutYProperty().bind(scene.heightProperty().multiply(0.725));
+        MultiPlayerBtn.layoutYProperty().bind(scene.heightProperty().multiply(0.815));
+        exitBtn.layoutYProperty().bind(scene.heightProperty().multiply(0.90));
+
+        // Volume control near left edge, proportional Y
+        volumeControl.layoutXProperty().set(15);
+        volumeControl.layoutYProperty().bind(scene.heightProperty().multiply(0.78));
+
+        // Center the logo
+        scene.widthProperty().addListener((obs, ov, nv) -> centerImage(imageView, scene));
+        scene.heightProperty().addListener((obs, ov, nv) -> centerImage(imageView, scene));
+
+        // Bind volume
+        mediaPlayer.volumeProperty().bind(volumeSlider.valueProperty());
+        volumeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            double v = newVal.doubleValue();
+            speakerLabel.setText(v == 0 ? "\uD83D\uDD07" : (v <= 0.3 ? "\uD83D\uDD08" : (v <= 0.7 ? "\uD83D\uDD09" : "\uD83D\uDD0A")));
+        });
+
         primaryStage.setTitle("Home");
         primaryStage.setScene(scene);
+//        primaryStage.initStyle(StageStyle.UNDECORATED);
+//        primaryStage.setFullScreenExitHint("");
         primaryStage.setFullScreen(true);
         primaryStage.show();
-
         Platform.runLater(() -> {
-            double width = MultiPlayerBtn.getWidth();
-            SinglePlayerBtn.setLayoutX((screenWidth - width) / 2);
-            MultiPlayerBtn.setLayoutX((screenWidth - width) / 2);
-            exitBtn.setLayoutX((screenWidth - width) / 2);
+            var screen = Screen.getScreensForRectangle(primaryStage.getX(), primaryStage.getY(), primaryStage.getWidth(), primaryStage.getHeight()).stream().findFirst().orElse(Screen.getPrimary());
+            var vb = screen.getVisualBounds();
+            primaryStage.setX(vb.getMinX());
+            primaryStage.setY(vb.getMinY());
+            primaryStage.setWidth(vb.getWidth());
+            primaryStage.setHeight(vb.getHeight());
         });
         centerImage(imageView, scene);
     }
+
 
     private void centerImage(ImageView imageView, Scene scene) {
         double centerX = (scene.getWidth() - imageView.getFitWidth()) / 2;

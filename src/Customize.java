@@ -19,6 +19,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class Customize extends Application {
+    private Stage stage;
     private int selectedIndexCar1 = 0;
     private int selectedIndexCar2 = 0;
     private Rectangle selectCar1;
@@ -36,6 +37,7 @@ public class Customize extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        this.stage = primaryStage;
         double screenWidth = Screen.getPrimary().getBounds().getWidth();
         double screenHeight = Screen.getPrimary().getBounds().getHeight();
 
@@ -192,6 +194,17 @@ public class Customize extends Application {
             readycar2.setText(iscar2ready ? "Car2 Ready ✔️" : "Ready Car2 (Shift)");
         });
 
+        Button backButton = new Button("Back");
+        backButton.setStyle("-fx-background-color:#e53935; -fx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 20px; -fx-cursor: hand");
+        backButton.setPrefSize(150,40);
+        StackPane.setAlignment(backButton, Pos.BOTTOM_CENTER);
+        StackPane.setMargin(backButton, new Insets(0, 0, 12, 0));
+        root.getChildren().add(backButton);
+        backButton.setOnAction(e -> {
+            new Main().start(stage); // or however you navigate back
+        });
+
+
         Scene scene = new Scene(root, screenWidth, screenHeight);
 
         scene.setOnKeyPressed(event -> {
@@ -285,6 +298,8 @@ public class Customize extends Application {
         });
         primaryStage.setTitle("Multi Player Customize");
         primaryStage.setScene(scene);
+//        primaryStage.initStyle(StageStyle.UNDECORATED);
+//        primaryStage.setFullScreenExitHint("");
         primaryStage.setFullScreen(true);
         primaryStage.show();
         root.requestFocus();
@@ -342,12 +357,13 @@ public class Customize extends Application {
             selectedButtonIndex = 0;
 
             startBtn.setOnAction(e -> {
-                Racing_Game racing_Game = new Racing_Game(selectedImageCar1Path, selectedImageCar2Path);
-                try {
-                    racing_Game.start(new Stage());
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+                Racing_Game racing = new Racing_Game(selectedImageCar1Path, selectedImageCar2Path);
+
+                Scene customizeScene = stage.getScene();
+                Scene racingScene = racing.createScene(stage, customizeScene);
+
+                stage.setScene(racingScene);
+                stage.setFullScreen(true);
             });
 
             cancelBtn.setOnAction(e -> {
