@@ -203,14 +203,23 @@ public class Customize extends Application {
         });
 
         Button backButton = new Button("Back");
-        backButton.setStyle("-fx-background-color:#e53935; -fx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 20px; -fx-cursor: hand");
-        backButton.setPrefSize(150,40);
+        backButton.setStyle("-fx-background-color:#8e44ad; -fx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 20px; -fx-cursor: hand");
+        backButton.setPrefSize(150, 40);
+
+
         StackPane.setAlignment(backButton, Pos.BOTTOM_CENTER);
-        StackPane.setMargin(backButton, new Insets(0, 0, 12, 0));
+        StackPane.setMargin(backButton, new Insets(0, 0, 10, 0));
         root.getChildren().add(backButton);
+
         backButton.setOnAction(e -> {
-            new Main().start(stage);
+            Main mainMenu = new Main();
+            try {
+                mainMenu.start(primaryStage);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         });
+
 
 
         Scene scene = new Scene(root, screenWidth, screenHeight);
@@ -319,8 +328,8 @@ public class Customize extends Application {
             car1Images.get(oldindex).setScaleY(1);
         }
         if (newindex >= 0 && newindex < car1Images.size()) {
-            car1Images.get(newindex).setScaleX(1.15);
-            car1Images.get(newindex).setScaleY(1.15);
+            car1Images.get(newindex).setScaleX(1.1);
+            car1Images.get(newindex).setScaleY(1.1);
         }
     }
 
@@ -330,8 +339,8 @@ public class Customize extends Application {
             car2Images.get(oldindex).setScaleY(1);
         }
         if (newindex >= 0 && newindex < car1Images.size()) {
-            car2Images.get(newindex).setScaleX(1.15);
-            car2Images.get(newindex).setScaleY(1.15);
+            car2Images.get(newindex).setScaleX(1.1);
+            car2Images.get(newindex).setScaleY(1.1);
         }
     }
 
@@ -385,6 +394,7 @@ public class Customize extends Application {
                 iscar2ready = false;
                 readycar1.setText("Ready Car1 (Ctrl)");
                 readycar2.setText("Ready Car2 (Shift)");
+                root.requestFocus();
             });
         }
     }
