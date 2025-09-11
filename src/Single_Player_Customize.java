@@ -34,7 +34,7 @@ public class Single_Player_Customize extends Application {
         double screenHeight = Screen.getPrimary().getVisualBounds().getHeight();
 
         Label mainLabel = new Label("Single Player Customize");
-        mainLabel.setFont(Font.font("Courier New", FontWeight.EXTRA_BOLD, 48));
+        mainLabel.setFont(Font.font("Courier New", FontWeight.EXTRA_BOLD, 32));
         mainLabel.setTextFill(Color.WHITE);
         mainLabel.setAlignment(Pos.CENTER);
 
@@ -45,7 +45,8 @@ public class Single_Player_Customize extends Application {
         GridPane carGrid = new GridPane();
         carGrid.setPrefSize(600, 600);
         carGrid.setHgap(2);
-        carGrid.setVgap(2);
+        carGrid.setVgap(20);
+        carGrid.setAlignment(Pos.CENTER); 
 
         double cellWidth = 150.0;
         double cellHeight = 300.0;
@@ -58,7 +59,7 @@ public class Single_Player_Customize extends Application {
                 "resources/pictures/arya'scar.png",
                 "resources/pictures/car4.png",
                 "resources/pictures/car3.png",
-                "resources/pictures/car1skin2.png"
+                "resources/pictures/skin11.png"
         };
 
         for (int row = 0; row < 2; row++) {
@@ -93,7 +94,7 @@ public class Single_Player_Customize extends Application {
 
         VBox carBox = new VBox(10, carLabel, carGrid);
         carBox.setAlignment(Pos.CENTER);
-        carBox.setPadding(new Insets(10, 10, 10, 10));
+        carBox.setPadding(new Insets(50, 50, 30, 50));
 
         selectedIndexCar = 0;
         selectedImageCarPath = imageUrlsCar[0];
@@ -102,18 +103,30 @@ public class Single_Player_Customize extends Application {
 
         VBox content = new VBox(20);
         content.setPadding(new Insets(0, 50, 30, 50));
+        Image bgImage = new Image(getClass().getResource("resources/pictures/background3.jpeg").toExternalForm());
+
+        BackgroundImage backgroundImage = new BackgroundImage(
+                bgImage,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true) // متناسب با اندازه VBox
+        );
+
+        content.setBackground(new Background(backgroundImage));
+
+        content.setPadding(new Insets(0, 50, 30, 50));
         content.setAlignment(Pos.CENTER);
-        content.setStyle("-fx-background-color: rgb(68, 7, 53);");
-        content.getChildren().add(mainLabel);
+        content.getChildren().addAll(mainLabel, carBox);
         StackPane root = new StackPane(content);
 
-        readyCar = new Button("Ready! (SHIFT)");
-        readyCar.setStyle("-fx-background-color: #8e44ad; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10px");
+        readyCar = new Button("Ready");
+        readyCar.setStyle("-fx-background-color:rgb(63, 6, 46); -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10px");
         carBox.getChildren().add(readyCar);
 
         readyCar.setOnAction(event -> {
             isCarReady = !isCarReady;
-            readyCar.setText(isCarReady ? "You're Ready!" : "Ready! (SHIFT)");
+            readyCar.setText(isCarReady ? "You're Ready!" : "Ready");
         });
 
         Scene scene = new Scene(root, screenWidth, screenHeight);
@@ -126,7 +139,7 @@ public class Single_Player_Customize extends Application {
                     selectedIndexCar--;
                     selectedImageCarPath = imageUrlsCar[selectedIndexCar];
                     updateSelectionPosition(carGrid, selectCar, selectedIndexCar, 4, cellWidth, cellHeight);
-                    updateCarImageZoom(selectedBtnIndex, prev);
+                    updateCarImageZoom( selectedIndexCar, prev);
                 }
             } else if (code == KeyCode.RIGHT) {
                 int prev = selectedIndexCar;
@@ -134,14 +147,14 @@ public class Single_Player_Customize extends Application {
                     selectedIndexCar++;
                     selectedImageCarPath = imageUrlsCar[selectedIndexCar];
                     updateSelectionPosition(carGrid, selectCar, selectedIndexCar, 4, cellWidth, cellHeight);
-                    updateCarImageZoom(selectedBtnIndex, prev);
+                    updateCarImageZoom( selectedIndexCar, prev);
                 }
             } else if (code == KeyCode.UP) {
                 int prev = selectedIndexCar;
                 if (selectedIndexCar - 4 >= 0) {
                     selectedIndexCar -= 4;
                     selectedImageCarPath = imageUrlsCar[selectedIndexCar];
-                    updateSelectionPosition(carGrid, selectCar, prev, 4, cellWidth, cellHeight);
+                    updateSelectionPosition(carGrid, selectCar, selectedIndexCar, 4, cellWidth, cellHeight);
                     updateCarImageZoom(selectedIndexCar, prev);
                 }
             } else if (code == KeyCode.DOWN) {
@@ -149,12 +162,12 @@ public class Single_Player_Customize extends Application {
                 if (selectedIndexCar + 4 < imageUrlsCar.length) {
                     selectedIndexCar += 4;
                     selectedImageCarPath = imageUrlsCar[selectedIndexCar];
-                    updateSelectionPosition(carGrid, selectCar, prev, 4, cellWidth, cellHeight);
+                    updateSelectionPosition(carGrid, selectCar, selectedIndexCar, 4, cellWidth, cellHeight);
                     updateCarImageZoom(selectedIndexCar, prev);
                 }
             } else if (code == KeyCode.SHIFT) {
                 isCarReady = !isCarReady;
-                readyCar.setText(isCarReady ? "Ready!" : "Ready! (SHIFT)");
+                readyCar.setText(isCarReady ? "Ready!" : "Ready!");
                 checkIfReady(root);
             } else if (startCancelBox != null) {
                 if (code == KeyCode.UP || code == KeyCode.DOWN)
@@ -227,6 +240,7 @@ public class Single_Player_Customize extends Application {
                     node.setOpacity(1);
                 isCarReady = false;
                 readyCar.setText("Ready!");
+                root.requestFocus();
             });
         }
     }

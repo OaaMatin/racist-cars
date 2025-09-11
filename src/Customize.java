@@ -1,3 +1,4 @@
+
 import java.util.ArrayList;
 import java.util.List;
 import javafx.application.Application;
@@ -19,6 +20,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class Customize extends Application {
+
     private int selectedIndexCar1 = 0;
     private int selectedIndexCar2 = 0;
     private Rectangle selectCar1;
@@ -57,14 +59,14 @@ public class Customize extends Application {
         double cellHeight = 600.0 / 2;
 
         String[] imageUrlsCar1 = {
-                "resources/pictures/car1skin1.png",
-                "resources/pictures/car1skin2.png",
-                "resources/pictures/car1.png",
-                "resources/pictures/car2.png",
-                "resources/pictures/arya'scar.png",
-                "resources/pictures/car4.png",
-                "resources/pictures/car3.png",
-                "resources/pictures/car1skin2.png"
+            "resources/pictures/car1skin1.png",
+            "resources/pictures/car1skin2.png",
+            "resources/pictures/skin11.png",
+            "resources/pictures/arya'scar.png",
+            "resources/pictures/car1.png",
+            "resources/pictures/car2.png",
+            "resources/pictures/car3.png",
+            "resources/pictures/car1skin2.png"
         };
 
         for (int row = 0; row < 2; row++) {
@@ -115,10 +117,10 @@ public class Customize extends Application {
         double cell2Height = 600.0 / 2;
 
         String[] imageUrlsCar2 = {
-                "resources/pictures/car1skin1.png",
-                "resources/pictures/car1.png",
-                "resources/pictures/car1skin2.png",
-                "resources/pictures/car2.png"
+            "resources/pictures/car1skin1.png",
+            "resources/pictures/car1.png",
+            "resources/pictures/car1skin2.png",
+            "resources/pictures/car2.png"
         };
 
         for (int row = 0; row < 2; row++) {
@@ -171,7 +173,18 @@ public class Customize extends Application {
 
         VBox content = new VBox(20);
         content.setPadding(new Insets(0, 50, 30, 50));
-        content.setStyle("-fx-background-color:rgb(68, 7, 53);");
+        Image bgImage = new Image(getClass().getResource("resources/pictures/background3.jpeg").toExternalForm());
+
+        BackgroundImage backgroundImage = new BackgroundImage(
+                bgImage,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true) // متناسب با اندازه VBox
+        );
+
+        content.setBackground(new Background(backgroundImage));
+
         content.setAlignment(Pos.TOP_CENTER);
         content.getChildren().addAll(mainLabel, rectanglesBox);
         StackPane root = new StackPane(content);
@@ -185,11 +198,11 @@ public class Customize extends Application {
 
         readycar1.setOnAction(e -> {
             iscar1ready = !iscar1ready;
-            readycar1.setText(iscar1ready ? "Car1 Ready ✔️" : "Ready Car1 (Ctrl)");
+            readycar1.setText(iscar1ready ? "Car1 Ready ✔️" : "Ready Car1 ");
         });
         readycar2.setOnAction(e -> {
             iscar2ready = !iscar2ready;
-            readycar2.setText(iscar2ready ? "Car2 Ready ✔️" : "Ready Car2 (Shift)");
+            readycar2.setText(iscar2ready ? "Car2 Ready ✔️" : "Ready Car2 ");
         });
 
         Scene scene = new Scene(root, screenWidth, screenHeight);
@@ -270,17 +283,18 @@ public class Customize extends Application {
                 }
             } else if (code == KeyCode.CONTROL) {
                 iscar1ready = !iscar1ready;
-                readycar1.setText(iscar1ready ? "Car1 Ready ✔️" : "Ready Car1 (Ctrl)");
+                readycar1.setText(iscar1ready ? "Car1 Ready ✔️" : "Ready Car1 ");
                 checkIfBothReady(root);
             } else if (code == KeyCode.SHIFT) {
                 iscar2ready = !iscar2ready;
-                readycar2.setText(iscar2ready ? "Car2 Ready ✔️" : "Ready Car2 (Shift)");
+                readycar2.setText(iscar2ready ? "Car2 Ready ✔️" : "Ready Car2 ");
                 checkIfBothReady(root);
             } else if (startCancelBox != null) {
-                if (code == KeyCode.UP || code == KeyCode.DOWN)
-                    selectedButtonIndex = (selectedButtonIndex == 0) ? 1 : 0;
-                else if (code == KeyCode.ENTER)
+                if (code == KeyCode.UP || code == KeyCode.DOWN) {
+                    selectedButtonIndex = (selectedButtonIndex == 0) ? 1 : 0; 
+                }else if (code == KeyCode.ENTER) {
                     ((Button) startCancelBox.getChildren().get(selectedButtonIndex)).fire();
+                }
             }
         });
         primaryStage.setTitle("Multi Player Customize");
@@ -302,13 +316,13 @@ public class Customize extends Application {
     }
 
     private void updateCar2ImageZoom(int newindex, int oldindex) {
-        if (oldindex >= 0 && oldindex < car1Images.size()) {
+        if (oldindex >= 0 && oldindex < car2Images.size()) {
             car2Images.get(oldindex).setScaleX(1);
             car2Images.get(oldindex).setScaleY(1);
         }
-        if (newindex >= 0 && newindex < car1Images.size()) {
-            car2Images.get(newindex).setScaleX(1.15);
-            car2Images.get(newindex).setScaleY(1.15);
+        if (newindex >= 0 && newindex < car2Images.size()) {
+            car2Images.get(newindex).setScaleX(1.1);
+            car2Images.get(newindex).setScaleY(1.1);
         }
     }
 
@@ -321,8 +335,9 @@ public class Customize extends Application {
 
     private void checkIfBothReady(Pane root) {
         if (iscar1ready && iscar2ready && startCancelBox == null) {
-            for (Node node : root.getChildren())
+            for (Node node : root.getChildren()) {
                 node.setOpacity(0.2);
+            }
             Button startBtn = new Button("Start Game");
             Button cancelBtn = new Button("Cancel");
 
@@ -353,15 +368,19 @@ public class Customize extends Application {
             cancelBtn.setOnAction(e -> {
                 root.getChildren().remove(startCancelBox);
                 startCancelBox = null;
-                for (Node node : root.getChildren())
+                for (Node node : root.getChildren()) {
                     node.setOpacity(1);
+                }
                 iscar1ready = false;
                 iscar2ready = false;
-                readycar1.setText("Ready Car1 (Ctrl)");
-                readycar2.setText("Ready Car2 (Shift)");
+                readycar1.setText("Ready Car1 ");
+                readycar2.setText("Ready Car2 ");
+
+                root.requestFocus();
             });
         }
     }
+
     public static void main(String[] args) {
         launch(args);
     }
