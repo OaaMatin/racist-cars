@@ -334,7 +334,10 @@ public class Racing_Game {
     private void cleanup() {
         if (timer != null) timer.stop();
         if (player != null) {
-            try { player.stop(); } catch (Exception ignored) {}
+            try {
+                player.stop();
+            } catch (Exception ignored) {
+            }
         }
     }
 
@@ -349,11 +352,11 @@ public class Racing_Game {
 
         Button rematchBtn = new Button("Rematch");
         rematchBtn.setStyle("-fx-background-color:#2980b9; -fx-text-fill:white; -fx-font-size:20px; -fx-font-weight:bold; -fx-background-radius:14; -fx-cursor: hand;");
-        rematchBtn.setPrefSize(200, 50);
+        rematchBtn.setPrefSize(150, 40);
 
-        Button backBtn = new Button("Back to Customize");
+        Button backBtn = new Button("Back");
         backBtn.setStyle("-fx-background-color:#e53935; -fx-text-fill:white; -fx-font-size:20px; -fx-font-weight:bold; -fx-background-radius:14; -fx-cursor: hand;");
-        backBtn.setPrefSize(260, 50);
+        backBtn.setPrefSize(150, 40);
 
         javafx.scene.layout.VBox box = new javafx.scene.layout.VBox(20, title, rematchBtn, backBtn);
         box.setAlignment(javafx.geometry.Pos.CENTER);
@@ -371,12 +374,12 @@ public class Racing_Game {
 
         // Buttons
         rematchBtn.setOnAction(e -> {
-            // rebuild the game scene fresh
-            Scene newScene = createScene(stageRef, customizeSceneRef);
+            Racing_Game fresh = new Racing_Game(car1ImagePath, car2ImagePath);
+            Scene newScene = fresh.createScene(stageRef, customizeSceneRef);
             stageRef.setScene(newScene);
             stageRef.setFullScreen(true);
         });
-
+        
         backBtn.setOnAction(e -> {
             stageRef.setScene(customizeSceneRef);
             stageRef.setFullScreen(true);

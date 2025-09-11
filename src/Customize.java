@@ -209,7 +209,7 @@ public class Customize extends Application {
         StackPane.setMargin(backButton, new Insets(0, 0, 12, 0));
         root.getChildren().add(backButton);
         backButton.setOnAction(e -> {
-            new Main().start(stage); // or however you navigate back
+            new Main().start(stage);
         });
 
 
