@@ -51,8 +51,4 @@ public class Objects {
     public int getLane() {
         return this.Lane;
     }
-
-
-
-
 }
