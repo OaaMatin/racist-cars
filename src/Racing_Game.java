@@ -1,15 +1,19 @@
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javafx.animation.AnimationTimer;
+import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
@@ -22,9 +26,9 @@ public class Racing_Game {
     private static final int INITIAL_OBSTACLES_PER_ROAD = 5;
     private static final double OBSTACLE_INCREMENT_DISTANCE = 2000;
     private static final int MAX_OBSTACLES_PER_ROAD = 10;
-    private static final double ACCELERATION = 0.03;
-    private static final double MAX_VELOCITY = 26;
-    private static final double FINISH_DISTANCE = 30000;
+    private static final double ACCELERATION = 0.025;
+    private static final double MAX_VELOCITY = 20;
+    private static final double FINISH_DISTANCE = 40000;
 
     private final String car1ImagePath;
     private final String car2ImagePath;
@@ -82,7 +86,7 @@ public class Racing_Game {
                     .toExternalForm());
             player = new MediaPlayer(media);
             player.setCycleCount(MediaPlayer.INDEFINITE);
-            player.setVolume(0.7);
+            player.setVolume(1.0);
             player.setOnReady(player::play);
         } catch (Exception ignored) {
             // If the music is missing, continue silently.
@@ -183,6 +187,7 @@ public class Racing_Game {
             pauseOverlay.setVisible(true);
         });
 
+
         rematchBtn.setOnAction(e -> {
             Racing_Game fresh = new Racing_Game(car1ImagePath, car2ImagePath);
             Scene newScene = fresh.createScene(stageRef, customizeSceneRef);
@@ -204,7 +209,25 @@ public class Racing_Game {
             stageRef.setFullScreen(true);
         });
 
-        root.getChildren().addAll(pauseBtn, pauseOverlay);
+        Slider volumeSlider = new Slider(0, 1, 0.5);
+        volumeSlider.setOrientation(Orientation.VERTICAL);
+
+        Label speakerLabel = new Label("\uD83D\uDD0A");
+        speakerLabel.setStyle("-fx-font-size: 28px; -fx-text-fill: white;");
+
+        VBox volumeControl = new VBox(5, volumeSlider, speakerLabel);
+        volumeControl.setAlignment(Pos.CENTER);
+
+        volumeControl.layoutXProperty().set(15);
+        volumeControl.layoutYProperty().bind(scene.heightProperty().multiply(0.78));
+
+        player.volumeProperty().bind(volumeSlider.valueProperty());
+        volumeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            double v = newVal.doubleValue();
+            speakerLabel.setText(v == 0 ? "\uD83D\uDD07" : (v <= 0.3 ? "\uD83D\uDD08" : (v <= 0.7 ? "\uD83D\uDD09" : "\uD83D\uDD0A")));
+        });
+
+        root.getChildren().addAll(pauseBtn, pauseOverlay, volumeControl);
 
         timer = new AnimationTimer() {
             @Override
