@@ -1,6 +1,6 @@
-
 import java.util.ArrayList;
 import java.util.List;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -53,14 +53,16 @@ public class Single_Player_Customize extends Application {
         double cellWidth = 150.0;
         double cellHeight = 300.0;
 
-        String[] imageUrlsCar = {"resources/pictures/car1skin1.png",
-            "resources/pictures/car1skin2.png",
-            "resources/pictures/car1.png",
-            "resources/pictures/car2.png",
-            "resources/pictures/arya'scar.png",
-            "resources/pictures/car4.png",
-            "resources/pictures/car3.png",
-            "resources/pictures/skin11.png"};
+        String[] imageUrlsCar = {
+                "resources/pictures/car1skin1.png",
+                "resources/pictures/car1skin2.png",
+                "resources/pictures/car1.png",
+                "resources/pictures/car2.png",
+                "resources/pictures/arya'scar.png",
+                "resources/pictures/car4.png",
+                "resources/pictures/car3.png",
+                "resources/pictures/skin11.png"
+        };
 
         for (int row = 0; row < 2; row++) {
             for (int col = 0; col < 4; col++) {
@@ -102,12 +104,14 @@ public class Single_Player_Customize extends Application {
         updateCarImageZoom(0, -1);
 
         VBox content = new VBox(20);
-        content.setPadding(new Insets(0, 50, 30, 50));
         Image bgImage = new Image(getClass().getResource("resources/pictures/background3.jpeg").toExternalForm());
-
-        BackgroundImage backgroundImage = new BackgroundImage(bgImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true) // متناسب با اندازه VBox
+        BackgroundImage backgroundImage = new BackgroundImage(
+                bgImage,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true) // متناسب با اندازه VBox
         );
-
         content.setBackground(new Background(backgroundImage));
 
         content.setPadding(new Insets(0, 50, 30, 50));
@@ -115,21 +119,21 @@ public class Single_Player_Customize extends Application {
         content.getChildren().addAll(mainLabel, carBox);
         StackPane root = new StackPane(content);
 
-        readyCar = new Button("Ready");
-        readyCar.setStyle("-fx-background-color:rgb(63, 6, 46); -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10px");
+        readyCar = new Button("Ready (Shift)");
+        readyCar.setStyle("-fx-background-color:#8e44ad; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10px");
         carBox.getChildren().add(readyCar);
 
         readyCar.setOnAction(event -> {
             isCarReady = !isCarReady;
-            readyCar.setText(isCarReady ? "You're Ready!" : "Ready");
+            readyCar.setText(isCarReady ? "You're Ready!" : "Ready (Shift)");
         });
 
         Button backButton = new Button("Back");
-        backButton.setStyle("-fx-background-color:#8e44ad; -fx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 20px; -fx-cursor: hand");
-        backButton.setPrefSize(100, 40);
+        backButton.setStyle("-fx-background-color:#c0392b; -fx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 20px; -fx-cursor: hand");
+        backButton.setPrefSize(150, 40);
 
 
-        StackPane.setAlignment(backButton, Pos.BOTTOM_LEFT);
+        StackPane.setAlignment(backButton, Pos.BOTTOM_CENTER);
         StackPane.setMargin(backButton, new Insets(0, 0, 10, 10));
         root.getChildren().add(backButton);
 
@@ -180,7 +184,7 @@ public class Single_Player_Customize extends Application {
                 }
             } else if (code == KeyCode.SHIFT) {
                 isCarReady = !isCarReady;
-                readyCar.setText(isCarReady ? "You're Ready!" : "Ready!");
+                readyCar.setText(isCarReady ? "You're Ready!" : "Ready (Shift)");
                 checkIfReady(root);
             } else if (startCancelBox != null) {
                 if (code == KeyCode.UP || code == KeyCode.DOWN) {
@@ -226,8 +230,8 @@ public class Single_Player_Customize extends Application {
             Button cancelBtn = new Button("Cancel");
             cancelBtn.setPrefSize(150, 40);
 
-            startBtn.setStyle("-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-size: 20px; -fx-background-radius: 15px;");
-            cancelBtn.setStyle("-fx-background-color: #c0392b; -fx-text-fill: white; -fx-font-size: 20px; -fx-background-radius: 15px;");
+            startBtn.setStyle("-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-size: 20px; -fx-background-radius: 13px;");
+            cancelBtn.setStyle("-fx-background-color: #c0392b; -fx-text-fill: white; -fx-font-size: 20px; -fx-background-radius: 13px;");
 
             startBtn.setFont(Font.font("Courier New", FontWeight.BOLD, 24));
             cancelBtn.setFont(Font.font("Courier New", FontWeight.BOLD, 24));
@@ -257,7 +261,7 @@ public class Single_Player_Customize extends Application {
                     node.setOpacity(1);
                 }
                 isCarReady = false;
-                readyCar.setText("Ready!");
+                readyCar.setText("Ready (Shift)");
                 root.requestFocus();
             });
         }

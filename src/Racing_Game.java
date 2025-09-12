@@ -143,8 +143,8 @@ public class Racing_Game {
         }
 
         Button pauseBtn = new Button("Pause");
-        pauseBtn.setStyle("-fx-background-color:#e91e63-text-fill:white; -fx-background-radius: 13; -fx-font-size: 20px; -fx-cursor: hand");
-        pauseBtn.setPrefSize(100, 30);
+        pauseBtn.setStyle("-fx-background-color:#e91e63; -fx-text-fill: white; -fx-background-radius: 13; -fx-font-size: 22px; -fx-cursor: hand");
+        pauseBtn.setPrefSize(150, 40);
         pauseBtn.setLayoutX((screenWidth - pauseBtn.getPrefWidth()) / 2);
         pauseBtn.setLayoutY(screenHeight - pauseBtn.getPrefHeight() - 20);
 
@@ -156,18 +156,24 @@ public class Racing_Game {
         pauseOverlay.setVisible(false);
 
         Button continueBtn = new Button("Continue");
-        continueBtn.setStyle("-fx-background-color:#27ae60; -fx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 22px;");
-        continueBtn.setPrefSize(150, 50);
+        continueBtn.setStyle("-fx-background-color:#27ae60; -fx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 22px; -fx-cursor: hand;");
+        continueBtn.setPrefSize(150, 40);
         continueBtn.setLayoutX((screenWidth - continueBtn.getPrefWidth()) / 2);
-        continueBtn.setLayoutY(screenHeight / 2 - 60);
+        continueBtn.setLayoutY(screenHeight / 2 - 90);
 
-        Button cancelBtn = new Button("Cancel");
-        cancelBtn.setStyle("-fx-background-color:#c0392b; -fx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 22px;");
-        cancelBtn.setPrefSize(150, 50);
+        Button rematchBtn = new Button("Rematch");
+        rematchBtn.setStyle("-fx-background-color:#2980b9; -fx-text-fill:white; -fx-background-radius:13; -fx-font-size:22px; -fx-cursor: hand;");
+        rematchBtn.setPrefSize(150, 40);
+        rematchBtn.setLayoutX((screenWidth - rematchBtn.getPrefWidth()) / 2);
+        rematchBtn.setLayoutY(screenHeight / 2 - 30);
+
+        Button cancelBtn = new Button("Exit");
+        cancelBtn.setStyle("-fx-background-color:#c0392b; -fx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 22px; -fx-cursor: hand;");
+        cancelBtn.setPrefSize(150, 40);
         cancelBtn.setLayoutX((screenWidth - cancelBtn.getPrefWidth()) / 2);
-        cancelBtn.setLayoutY(screenHeight / 2 + 20);
+        cancelBtn.setLayoutY(screenHeight / 2 + 30);
 
-        pauseOverlay.getChildren().addAll(continueBtn, cancelBtn);
+        pauseOverlay.getChildren().addAll(continueBtn,rematchBtn, cancelBtn);
 
         pauseBtn.setOnAction(e -> {
             timer.stop();
@@ -175,6 +181,13 @@ public class Racing_Game {
                 player.pause();
             }
             pauseOverlay.setVisible(true);
+        });
+
+        rematchBtn.setOnAction(e -> {
+            Racing_Game fresh = new Racing_Game(car1ImagePath, car2ImagePath);
+            Scene newScene = fresh.createScene(stageRef, customizeSceneRef);
+            stageRef.setScene(newScene);
+            stageRef.setFullScreen(true);
         });
 
         continueBtn.setOnAction(e -> {
@@ -408,11 +421,11 @@ public class Racing_Game {
         title.setStyle("-fx-text-fill: white; -fx-font-size: 48px; -fx-font-weight: bold;");
 
         Button rematchBtn = new Button("Rematch");
-        rematchBtn.setStyle("-fx-background-color:#2980b9; -fx-text-fill:white; -fx-font-size:20px; -fx-font-weight:bold; -fx-background-radius:14; -fx-cursor: hand;");
+        rematchBtn.setStyle("-fx-background-color:#2980b9; -fx-text-fill:white; -fx-font-size:20px; -fx-font-weight:bold; -fx-background-radius:13; -fx-cursor: hand;");
         rematchBtn.setPrefSize(150, 40);
 
-        Button backBtn = new Button("Back");
-        backBtn.setStyle("-fx-background-color:#e53935; -fx-text-fill:white; -fx-font-size:20px; -fx-font-weight:bold; -fx-background-radius:14; -fx-cursor: hand;");
+        Button backBtn = new Button("Exit");
+        backBtn.setStyle("-fx-background-color:#c0392b; -fx-text-fill:white; -fx-font-size:20px; -fx-font-weight:bold; -fx-background-radius:13; -fx-cursor: hand;");
         backBtn.setPrefSize(150, 40);
 
         javafx.scene.layout.VBox box = new javafx.scene.layout.VBox(20, title, rematchBtn, backBtn);

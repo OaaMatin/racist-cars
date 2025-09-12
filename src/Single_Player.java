@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -8,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import javafx.animation.AnimationTimer;
 import javafx.animation.TranslateTransition;
 import javafx.scene.Scene;
@@ -21,9 +21,12 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.input.KeyCombination;
+import javafx.stage.StageStyle;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
 
 public class Single_Player {
 
@@ -208,7 +211,10 @@ public class Single_Player {
 
         timer.start();
         stage.setTitle("Single Player");
+        stage.initStyle(StageStyle.UNDECORATED);
         stage.setScene(scene);
+        stage.setFullScreenExitHint("");
+        stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
         stage.setFullScreen(true);
         stage.show();
     }

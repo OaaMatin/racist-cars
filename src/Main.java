@@ -12,6 +12,8 @@ import javafx.scene.layout.*;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.scene.media.Media;
+import javafx.scene.input.KeyCombination;
+import javafx.stage.StageStyle;
 import javafx.scene.media.MediaPlayer;
 
 import java.io.File;
@@ -99,8 +101,7 @@ public class Main extends Application {
 
         primaryStage.setTitle("Home");
         primaryStage.setScene(scene);
-//        primaryStage.initStyle(StageStyle.UNDECORATED);
-//        primaryStage.setFullScreenExitHint("");
+        primaryStage.setFullScreenExitHint("");
         primaryStage.setFullScreen(true);
         primaryStage.show();
         Platform.runLater(() -> {
