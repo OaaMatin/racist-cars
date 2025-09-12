@@ -1,3 +1,4 @@
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -141,22 +142,63 @@ public class Racing_Game {
             root.getChildren().add(obj2.getObstacle());
         }
 
-        Button backBtn = new Button("Back");
-        backBtn.setStyle("-fx-background-color:#8e55ad; -fx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 20px; -fx-cursor: hand");
-        backBtn.setPrefSize(100, 30);
-        backBtn.setLayoutX((screenWidth - backBtn.getPrefWidth()) / 2);
-        backBtn.setLayoutY(screenHeight - backBtn.getPrefHeight() - 16);
-        backBtn.setFocusTraversable(false);
-        backBtn.setOnAction(e -> {
-            cleanup();
-            stage.setScene(customizeScene);
+        Button pauseBtn = new Button("Pause");
+        pauseBtn.setStyle("-fx-background-color:#e91e63-text-fill:white; -fx-background-radius: 13; -fx-font-size: 20px; -fx-cursor: hand");
+        pauseBtn.setPrefSize(100, 30);
+        pauseBtn.setLayoutX((screenWidth - pauseBtn.getPrefWidth()) / 2);
+        pauseBtn.setLayoutY(screenHeight - pauseBtn.getPrefHeight() - 20);
+
+        pauseBtn.setFocusTraversable(false);
+
+        Pane pauseOverlay = new Pane();
+        pauseOverlay.setStyle("-fx-background-color: rgba(0,0,0,0.6);");
+        pauseOverlay.setPrefSize(screenWidth, screenHeight);
+        pauseOverlay.setVisible(false);
+
+        Button continueBtn = new Button("Continue");
+        continueBtn.setStyle("-fx-background-color:#27ae60; -fx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 22px;");
+        continueBtn.setPrefSize(150, 50);
+        continueBtn.setLayoutX((screenWidth - continueBtn.getPrefWidth()) / 2);
+        continueBtn.setLayoutY(screenHeight / 2 - 60);
+
+        Button cancelBtn = new Button("Cancel");
+        cancelBtn.setStyle("-fx-background-color:#c0392b; -fx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 22px;");
+        cancelBtn.setPrefSize(150, 50);
+        cancelBtn.setLayoutX((screenWidth - cancelBtn.getPrefWidth()) / 2);
+        cancelBtn.setLayoutY(screenHeight / 2 + 20);
+
+        pauseOverlay.getChildren().addAll(continueBtn, cancelBtn);
+
+        pauseBtn.setOnAction(e -> {
+            timer.stop();
+            if (player != null) {
+                player.pause();
+            }
+            pauseOverlay.setVisible(true);
         });
-        root.getChildren().add(backBtn);
+
+        continueBtn.setOnAction(e -> {
+            timer.start();
+            if (player != null) {
+                player.play();
+            }
+            pauseOverlay.setVisible(false);
+        });
+
+        cancelBtn.setOnAction(e -> {
+            cleanup();
+            stageRef.setScene(customizeSceneRef);
+            stageRef.setFullScreen(true);
+        });
+
+        root.getChildren().addAll(pauseBtn, pauseOverlay);
 
         timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                if (gameOver) return;
+                if (gameOver) {
+                    return;
+                }
 
                 Cars.move1(car1, pressedKeys, car1IsMoving);
                 Cars.move2(car2, pressedKeys, car2IsMoving);
@@ -182,10 +224,18 @@ public class Racing_Game {
 
     private void update() {
         // Velocity
-        if (velocity1 < MAX_VELOCITY) velocity1 += ACCELERATION;
-        if (velocity2 < MAX_VELOCITY) velocity2 += ACCELERATION;
-        if (velocity1 > MAX_VELOCITY) velocity1 = MAX_VELOCITY;
-        if (velocity2 > MAX_VELOCITY) velocity2 = MAX_VELOCITY;
+        if (velocity1 < MAX_VELOCITY) {
+            velocity1 += ACCELERATION;
+        }
+        if (velocity2 < MAX_VELOCITY) {
+            velocity2 += ACCELERATION;
+        }
+        if (velocity1 > MAX_VELOCITY) {
+            velocity1 = MAX_VELOCITY;
+        }
+        if (velocity2 > MAX_VELOCITY) {
+            velocity2 = MAX_VELOCITY;
+        }
 
         // Scroll maps
         map1.updateMap1(velocity1);
@@ -204,8 +254,8 @@ public class Racing_Game {
             int randomLane1 = (int) (Math.random() * 5);
             boolean tooClose = false;
             for (Objects existing : obstacles1) {
-                if (existing.getLane() == randomLane1 &&
-                        Math.abs(existing.getObstacle().getY() + velocity1 - (-100)) < 150) {
+                if (existing.getLane() == randomLane1
+                        && Math.abs(existing.getObstacle().getY() + velocity1 - (-100)) < 150) {
                     tooClose = true;
                     break;
                 }
@@ -227,8 +277,8 @@ public class Racing_Game {
             int randomLane2 = 5 + (int) (Math.random() * 5);
             boolean tooClose = false;
             for (Objects existing : obstacles2) {
-                if (existing.getLane() == randomLane2 &&
-                        Math.abs(existing.getObstacle().getY() + velocity2 - (-100)) < 150) {
+                if (existing.getLane() == randomLane2
+                        && Math.abs(existing.getObstacle().getY() + velocity2 - (-100)) < 150) {
                     tooClose = true;
                     break;
                 }
@@ -310,7 +360,9 @@ public class Racing_Game {
                     }
                 }
             }
-            if (suitable) iv.setY(candidateY);
+            if (suitable) {
+                iv.setY(candidateY);
+            }
             attempts++;
         }
         if (!suitable) {
@@ -319,18 +371,25 @@ public class Racing_Game {
             for (Objects other : list) {
                 if (other != obj && other.getLane() == lane) {
                     double otherY = other.getObstacle().getY();
-                    if (otherY < minY) minY = otherY;
+                    if (otherY < minY) {
+                        minY = otherY;
+                    }
                     hasOther = true;
                 }
             }
-            if (hasOther) iv.setY(minY - obstacleHeight - gap);
-            else iv.setY(-Math.random() * 2000);
+            if (hasOther) {
+                iv.setY(minY - obstacleHeight - gap); 
+            }else {
+                iv.setY(-Math.random() * 2000);
+            }
         }
     }
 
     // Stop loop and music
     private void cleanup() {
-        if (timer != null) timer.stop();
+        if (timer != null) {
+            timer.stop();
+        }
         if (player != null) {
             try {
                 player.stop();
@@ -377,7 +436,7 @@ public class Racing_Game {
             stageRef.setScene(newScene);
             stageRef.setFullScreen(true);
         });
-        
+
         backBtn.setOnAction(e -> {
             stageRef.setScene(customizeSceneRef);
             stageRef.setFullScreen(true);
