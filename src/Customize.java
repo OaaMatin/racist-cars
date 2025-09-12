@@ -41,8 +41,8 @@ public class Customize extends Application {
         double screenWidth = Screen.getPrimary().getBounds().getWidth();
         double screenHeight = Screen.getPrimary().getBounds().getHeight();
 
-        Label mainLabel = new Label("CUSTOMIZE");
-        mainLabel.setFont(Font.font("Courier New", FontWeight.EXTRA_BOLD, 48));
+        Label mainLabel = new Label("Multi Player Customize");
+        mainLabel.setFont(Font.font("Courier New", FontWeight.EXTRA_BOLD, 32));
         mainLabel.setTextFill(Color.WHITE);
         mainLabel.setAlignment(Pos.CENTER);
 
@@ -53,7 +53,7 @@ public class Customize extends Application {
         GridPane car1Grid = new GridPane();
         car1Grid.setPrefSize(600, 600);
         car1Grid.setHgap(2);
-        car1Grid.setVgap(2);
+        car1Grid.setVgap(20);
 
         double cellWidth = 600.0 / 4;
         double cellHeight = 600.0 / 2;
@@ -101,7 +101,7 @@ public class Customize extends Application {
         car1Grid.getChildren().add(selectCar1);
 
         VBox car1Box = new VBox(10, car1Label, car1Grid);
-        car1Box.setAlignment(Pos.TOP_LEFT);
+        car1Box.setAlignment(Pos.TOP_CENTER);
         car1Box.setPadding(new Insets(0, 0, 0, 10));
 
         Label car2Label = new Label("Car2");
@@ -111,7 +111,7 @@ public class Customize extends Application {
         GridPane car2Grid = new GridPane();
         car2Grid.setPrefSize(600, 600);
         car2Grid.setHgap(2);
-        car2Grid.setVgap(2);
+        car2Grid.setVgap(20);
 
         double cell2Width = 600.0 / 2;
         double cell2Height = 600.0 / 2;
@@ -155,7 +155,7 @@ public class Customize extends Application {
         car2Grid.getChildren().add(selectCar2);
 
         VBox car2Box = new VBox(10, car2Label, car2Grid);
-        car2Box.setAlignment(Pos.TOP_RIGHT);
+        car2Box.setAlignment(Pos.TOP_CENTER);
         car2Box.setPadding(new Insets(0, 10, 0, 0));
 
         HBox rectanglesBox = new HBox(20, car1Box, car2Box);
@@ -172,7 +172,6 @@ public class Customize extends Application {
         updateCar2ImageZoom(0, -1);
 
         VBox content = new VBox(20);
-        content.setPadding(new Insets(0, 50, 30, 50));
         Image bgImage = new Image(getClass().getResource("resources/pictures/background3.jpeg").toExternalForm());
         BackgroundImage backgroundImage = new BackgroundImage(
                 bgImage,
@@ -182,6 +181,8 @@ public class Customize extends Application {
                 new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true) // متناسب با اندازه VBox
         );
         content.setBackground(new Background(backgroundImage));
+
+        content.setPadding(new Insets(0, 50, 30, 50));
         content.setAlignment(Pos.TOP_CENTER);
         content.getChildren().addAll(mainLabel, rectanglesBox);
         StackPane root = new StackPane(content);
@@ -190,7 +191,7 @@ public class Customize extends Application {
         readycar1.setStyle("-fx-background-color: #8e44ad; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10;");
         car1Box.getChildren().add(readycar1);
         readycar2 = new Button("Ready Car2 (Shift)");
-        readycar2.setStyle("-fx-background-color:rgb(174, 39, 140); -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10;");
+        readycar2.setStyle("-fx-background-color:#8e44ad; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10;");
         car2Box.getChildren().add(readycar2);
 
         readycar1.setOnAction(e -> {
@@ -203,7 +204,7 @@ public class Customize extends Application {
         });
 
         Button backButton = new Button("Back");
-        backButton.setStyle("-fx-background-color:#8e44ad; -fx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 20px; -fx-cursor: hand");
+        backButton.setStyle("-fx-background-color:#c0392b; -fx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 20px; -fx-cursor: hand");
         backButton.setPrefSize(150, 40);
 
 
