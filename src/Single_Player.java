@@ -1,4 +1,9 @@
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -7,6 +12,7 @@ import javafx.animation.AnimationTimer;
 import javafx.animation.TranslateTransition;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -26,6 +32,11 @@ public class Single_Player {
     private static final int MAX_OBSTACLES_PER_ROAD = 10;
     private String carImagePath;
     private double targetX;
+    private double maxDistance = 0;
+    private Label distanceLabel;
+    int crashCount = 0;
+    final int maxCrashes = 6;
+    ArrayList<ImageView> hearts = new ArrayList<>();
 
     public Single_Player(String carPath) {
         this.carImagePath = carPath;
@@ -94,6 +105,28 @@ public class Single_Player {
 
         root.getChildren().addAll(map, car, finishLine);
 
+        distanceLabel = new Label();
+        distanceLabel.setTextFill(Color.WHITE);
+        distanceLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+        distanceLabel.setLayoutX(screenWidth - 360);
+        distanceLabel.setLayoutY(10);
+        maxDistance = loadMaxDistance();
+        maxDistance = loadMaxDistance();
+        distanceLabel.setText(String.format("Distance: %.0f  |  Max: %.0f", distance, maxDistance));
+
+        root.getChildren().add(distanceLabel);
+
+        for (int i = 0; i < maxCrashes; i++) {
+            Image heartImage = new Image(getClass().getResource("/resources/pictures/heart.png").toExternalForm());
+            ImageView heart = new ImageView(heartImage);
+            heart.setFitWidth(40);
+            heart.setFitHeight(40);
+            heart.setLayoutX(10 + i * 45);
+            heart.setLayoutY(10);
+            hearts.add(heart);
+            root.getChildren().add(heart);
+        }
+
         for (int lane = 0; lane < 10; lane++) {
             Objects obj = new Objects(lane);
             obj.setObjectY(-Math.random() * 1500);
@@ -102,18 +135,16 @@ public class Single_Player {
         }
 
         Button pauseBtn = new Button("Pause");
-        pauseBtn.setStyle("-fx-background-color:#ffcbfx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 20px; -fx-cursor: hand");
-        pauseBtn.setPrefSize(100, 30);
-        pauseBtn.setLayoutX(20);
-        pauseBtn.setLayoutY(20);
+        pauseBtn.setStyle("-fx-background-color:#ff3399; -fx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 20px; -fx-cursor: hand");
+        pauseBtn.setPrefSize(120, 40);
+        pauseBtn.setLayoutX((screenWidth - pauseBtn.getPrefWidth()) / 2);
+        pauseBtn.setLayoutY(screenHeight - pauseBtn.getPrefHeight() - 20);
         pauseBtn.setFocusTraversable(false);
 
-
         Pane pauseOverlay = new Pane();
-        pauseOverlay.setStyle("-fx-background-color: rgba(0,0,0,0.6);"); 
+        pauseOverlay.setStyle("-fx-background-color: rgba(0,0,0,0.6);");
         pauseOverlay.setPrefSize(screenWidth, screenHeight);
         pauseOverlay.setVisible(false);
-
 
         Button continueBtn = new Button("Continue");
         continueBtn.setStyle("-fx-background-color:#27ae60; -fx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 22px;");
@@ -128,7 +159,6 @@ public class Single_Player {
         cancelBtn.setLayoutY(screenHeight / 2 + 20);
 
         pauseOverlay.getChildren().addAll(continueBtn, cancelBtn);
-
 
         pauseBtn.setOnAction(e -> {
             timer.stop();
@@ -164,9 +194,13 @@ public class Single_Player {
                     moveCarBetweenLanes(car, pressedKeys, car_isMoving);
                     update();
                     if (distance >= finishDistance) {
-                        System.out.println("finish");
                         gameOver = true;
                         timer.stop();
+
+                        if (distance > maxDistance) {
+                            maxDistance = distance;
+                            saveMaxDistance();
+                        }
                     }
                 }
             }
@@ -188,6 +222,10 @@ public class Single_Player {
         }
         map.updateMap1(velocity);
         distance += velocity;
+        if (distance > maxDistance) {
+            maxDistance = distance;
+        }
+        distanceLabel.setText(String.format("Distance: %.0f  |  Max: %.0f", distance, maxDistance));
         int desiredObstacles = INITIAL_OBSTACLES_PER_ROAD + (int) (distance / OBSTACLE_INCREMENT_DISTANCE);
         desiredObstacles = Math.min(desiredObstacles, MAX_OBSTACLES_PER_ROAD);
         while (obstacles.size() < desiredObstacles) {
@@ -260,11 +298,26 @@ public class Single_Player {
             if (car.getBoundsInParent().intersects(iv.getBoundsInParent())) {
                 iv.setY(-Math.random() * 2000);
                 velocity *= 0.8;
+
+                crashCount++;
+                if (crashCount <= hearts.size()) {
+                    hearts.get(crashCount - 1).setVisible(false);
+                }
+
+                if (crashCount >= maxCrashes) {
+                    gameOver = true;
+                    timer.stop();
+                    saveMaxDistance();
+                    showGameOverMessage();
+                }
                 break;
             }
         }
 
         if (distance >= finishDistance - screenHeight) {
+            gameOver = true;
+            timer.stop();
+            saveMaxDistance();
             finishLine.setVisible(true);
             double finishLaneY = car.getLayoutY() - (finishDistance - distance);
             finishLine.setY(finishLaneY);
@@ -278,6 +331,32 @@ public class Single_Player {
         if (player != null) {
             player.stop();
         }
+    }
+
+    private void saveMaxDistance() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("highscore.txt"))) {
+            writer.write(String.valueOf(maxDistance));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private double loadMaxDistance() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("highscore.txt"))) {
+            return Double.parseDouble(reader.readLine());
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    private void showGameOverMessage() {
+        Label gameOverLabel = new Label("GAME OVER!");
+        gameOverLabel.setTextFill(Color.RED);
+        gameOverLabel.setStyle("-fx-font-size: 64px; -fx-font-weight: bold;");
+        gameOverLabel.setLayoutX(screenWidth / 2 - 150);
+        gameOverLabel.setLayoutY(screenHeight / 2 - 100);
+
+        root.getChildren().add(gameOverLabel);
     }
 
     public void moveCarBetweenLanes(ImageView car, Set<KeyCode> pressedKeys, AtomicBoolean isMoving) {
