@@ -354,7 +354,7 @@ public class Customize extends Application {
     private void checkIfBothReady(Pane root) {
         if (iscar1ready && iscar2ready && startCancelBox == null) {
             for (Node node : root.getChildren())
-                node.setOpacity(0.2);
+                node.setOpacity(0.5);
             Button startBtn = new Button("Start Game");
             startBtn.setPrefSize(150,40);
             Button cancelBtn = new Button("Cancel");

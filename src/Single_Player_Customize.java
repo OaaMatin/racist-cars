@@ -243,8 +243,7 @@ public class Single_Player_Customize extends Application {
 
             startBtn.setOnAction(e -> {
                 try {
-                    Single_Player single_player = new Single_Player();
-                    single_player.setCarImagePath(selectedImageCarPath);
+                    Single_Player single_player = new Single_Player(selectedImageCarPath);
                     single_player.start(new Stage());
                 } catch (Exception ex) {
                     ex.printStackTrace();
