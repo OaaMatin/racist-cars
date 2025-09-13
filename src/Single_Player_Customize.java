@@ -19,7 +19,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class Single_Player_Customize extends Application {
-
+    private Stage stage;
     private int selectedIndexCar = 0;
     private Rectangle selectCar;
     private Button readyCar;
@@ -31,6 +31,7 @@ public class Single_Player_Customize extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        this.stage = primaryStage;
         double screenWidth = Screen.getPrimary().getVisualBounds().getWidth();
         double screenHeight = Screen.getPrimary().getVisualBounds().getHeight();
 
@@ -237,12 +238,13 @@ public class Single_Player_Customize extends Application {
             selectedBtnIndex = 0;
 
             startBtn.setOnAction(e -> {
-                try {
-                    Single_Player single_player = new Single_Player(selectedImageCarPath);
-                    single_player.start(new Stage());
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+                Single_Player game = new Single_Player(selectedImageCarPath);
+
+                Scene customizeScene = stage.getScene();
+                Scene gameScene = game.createScene(stage, customizeScene);
+
+                stage.setScene(gameScene);
+                stage.setFullScreen(true);
             });
 
             cancelBtn.setOnAction(e -> {

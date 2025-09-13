@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -81,9 +82,7 @@ public class Racing_Game {
         root.requestFocus();
 
         try {
-            Media media = new Media(getClass()
-                    .getResource("/resources/musics/Gorilaz.mp3")
-                    .toExternalForm());
+            Media media = new Media(getClass().getResource("/resources/musics/TokyoـDrift.mp3").toExternalForm());
             player = new MediaPlayer(media);
             player.setCycleCount(MediaPlayer.INDEFINITE);
             player.setVolume(1.0);
@@ -177,7 +176,7 @@ public class Racing_Game {
         cancelBtn.setLayoutX((screenWidth - cancelBtn.getPrefWidth()) / 2);
         cancelBtn.setLayoutY(screenHeight / 2 + 30);
 
-        pauseOverlay.getChildren().addAll(continueBtn,rematchBtn, cancelBtn);
+        pauseOverlay.getChildren().addAll(continueBtn, rematchBtn, cancelBtn);
 
         pauseBtn.setOnAction(e -> {
             timer.stop();
@@ -186,7 +185,6 @@ public class Racing_Game {
             }
             pauseOverlay.setVisible(true);
         });
-
 
         rematchBtn.setOnAction(e -> {
             Racing_Game fresh = new Racing_Game(car1ImagePath, car2ImagePath);
@@ -414,8 +412,8 @@ public class Racing_Game {
                 }
             }
             if (hasOther) {
-                iv.setY(minY - obstacleHeight - gap); 
-            }else {
+                iv.setY(minY - obstacleHeight - gap);
+            } else {
                 iv.setY(-Math.random() * 2000);
             }
         }
