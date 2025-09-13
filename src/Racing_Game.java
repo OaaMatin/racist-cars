@@ -24,13 +24,14 @@ import javafx.stage.Stage;
 
 public class Racing_Game {
 
-    private static final int INITIAL_OBSTACLES_PER_ROAD = 5;
-    private static final double OBSTACLE_INCREMENT_DISTANCE = 2000;
+    private static final int INITIAL_OBSTACLES_PER_ROAD = 4;
+    private static final double OBSTACLE_INCREMENT_DISTANCE = 3000;
     private static final int MAX_OBSTACLES_PER_ROAD = 10;
-    private static final double ACCELERATION = 0.025;
-    private static final double MAX_VELOCITY = 20;
+    private static final double ACCELERATION = 0.01;
+    private static final double MAX_VELOCITY = 4;
     private static final double FINISH_DISTANCE = 40000;
 
+    //اسکین های انتخابی
     private final String car1ImagePath;
     private final String car2ImagePath;
 
@@ -49,14 +50,19 @@ public class Racing_Game {
     private final ArrayList<Objects> obstacles1 = new ArrayList<>();
     private final ArrayList<Objects> obstacles2 = new ArrayList<>();
 
+    //برای جلوگیری از گرفتن ورودی در حین جابجایی لاین
     private final AtomicBoolean car1IsMoving = new AtomicBoolean(false);
     private final AtomicBoolean car2IsMoving = new AtomicBoolean(false);
 
+    //نقشه دو بخشی
     private RoadMap map1;
     private RoadMap map2;
+
+    //ماشین ها
     private ImageView car1;
     private ImageView car2;
 
+    //برای برگشتن به صفحه کاستومایز
     private Stage stageRef;
     private Scene customizeSceneRef;
 
@@ -81,6 +87,7 @@ public class Racing_Game {
         root.setFocusTraversable(true);
         root.requestFocus();
 
+        //موزیک بکگراند
         try {
             Media media = new Media(getClass().getResource("/resources/musics/TokyoـDrift.mp3").toExternalForm());
             player = new MediaPlayer(media);
@@ -88,7 +95,7 @@ public class Racing_Game {
             player.setVolume(1.0);
             player.setOnReady(player::play);
         } catch (Exception ignored) {
-            // If the music is missing, continue silently.
+            // جلوگیری از خطا در صورت پیدا نکردن موزیک
         }
 
         stage.setOnCloseRequest(e -> cleanup());
@@ -97,13 +104,14 @@ public class Racing_Game {
                 e -> pressedKeys.add(e.getCode()));
         scene.addEventFilter(javafx.scene.input.KeyEvent.KEY_RELEASED,
                 e -> pressedKeys.remove(e.getCode()));
-
         scene.setOnMouseClicked(e -> root.requestFocus());
 
+        // دو نقشه به اندازه نصف صفحه
         map1 = new RoadMap(screenWidth / 2, screenHeight);
         map2 = new RoadMap(screenWidth / 2, screenHeight);
         map2.setLayoutX(screenWidth / 2);
 
+        //تنظیمات ماشین ها
         try {
             car1 = new ImageView(new Image(car1ImagePath));
             car2 = new ImageView(new Image(car2ImagePath));
@@ -122,6 +130,7 @@ public class Racing_Game {
             e.printStackTrace();
         }
 
+        //خط پایان
         finishLine1 = new Rectangle(map1.getLayoutX() + map1.grassWidth, 0, map1.roadWidth, 8);
         finishLine1.setFill(Color.RED);
         finishLine1.setVisible(false);
@@ -132,6 +141,7 @@ public class Racing_Game {
 
         root.getChildren().addAll(map1, map2, car1, car2, finishLine1, finishLine2);
 
+        //موانع
         for (int lane = 0; lane < 5; lane++) {
             Objects obj1 = new Objects(lane);
             obj1.setObjectY(-Math.random() * 1500);
@@ -145,6 +155,7 @@ public class Racing_Game {
             root.getChildren().add(obj2.getObstacle());
         }
 
+        //دکمه استپ و دکمه های نمایش داده شده بعد از کلیک کردن آن
         Button pauseBtn = new Button("Pause");
         pauseBtn.setStyle("-fx-background-color:#e91e63; -fx-text-fill: white; -fx-background-radius: 13; -fx-font-size: 22px; -fx-cursor: hand");
         pauseBtn.setPrefSize(150, 40);
@@ -178,6 +189,7 @@ public class Racing_Game {
 
         pauseOverlay.getChildren().addAll(continueBtn, rematchBtn, cancelBtn);
 
+        //اتفاقاتی که با زدن دکمه استپ رخ میده
         pauseBtn.setOnAction(e -> {
             timer.stop();
             if (player != null) {
@@ -186,6 +198,7 @@ public class Racing_Game {
             pauseOverlay.setVisible(true);
         });
 
+        //شروع مجدد بازی با همون اسکین های ماشین
         rematchBtn.setOnAction(e -> {
             Racing_Game fresh = new Racing_Game(car1ImagePath, car2ImagePath);
             Scene newScene = fresh.createScene(stageRef, customizeSceneRef);
@@ -193,6 +206,7 @@ public class Racing_Game {
             stageRef.setFullScreen(true);
         });
 
+        //ادامه بازی
         continueBtn.setOnAction(e -> {
             timer.start();
             if (player != null) {
@@ -201,12 +215,14 @@ public class Racing_Game {
             pauseOverlay.setVisible(false);
         });
 
+        //برگشت به صفحه کاستومایز
         cancelBtn.setOnAction(e -> {
             cleanup();
             stageRef.setScene(customizeSceneRef);
             stageRef.setFullScreen(true);
         });
 
+        //نوار تنظیم صدا
         Slider volumeSlider = new Slider(0, 1, 0.5);
         volumeSlider.setOrientation(Orientation.VERTICAL);
 
@@ -219,14 +235,17 @@ public class Racing_Game {
         volumeControl.layoutXProperty().set(15);
         volumeControl.layoutYProperty().bind(scene.heightProperty().multiply(0.78));
 
+        //تغییر میزان صدا
         player.volumeProperty().bind(volumeSlider.valueProperty());
         volumeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             double v = newVal.doubleValue();
+            //تغییر شکل آیکون صدا با تغییر میزان صدا
             speakerLabel.setText(v == 0 ? "\uD83D\uDD07" : (v <= 0.3 ? "\uD83D\uDD08" : (v <= 0.7 ? "\uD83D\uDD09" : "\uD83D\uDD0A")));
         });
 
         root.getChildren().addAll(pauseBtn, pauseOverlay, volumeControl);
 
+        //حلقه اصلی
         timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -236,7 +255,11 @@ public class Racing_Game {
 
                 Cars.move1(car1, pressedKeys, car1IsMoving);
                 Cars.move2(car2, pressedKeys, car2IsMoving);
+
+                //مسیر و موانع و چیزای دیگه رو حرکت میده
                 update();
+
+                //شرط های برنده شدن رو چک میکنه
                 if (distance1 >= FINISH_DISTANCE) {
                     gameOver = true;
                     stop();
@@ -257,29 +280,21 @@ public class Racing_Game {
     }
 
     private void update() {
-        // Velocity
-        if (velocity1 < MAX_VELOCITY) {
-            velocity1 += ACCELERATION;
-        }
-        if (velocity2 < MAX_VELOCITY) {
-            velocity2 += ACCELERATION;
-        }
-        if (velocity1 > MAX_VELOCITY) {
-            velocity1 = MAX_VELOCITY;
-        }
-        if (velocity2 > MAX_VELOCITY) {
-            velocity2 = MAX_VELOCITY;
-        }
+        // سرعت
+        if (velocity1 < MAX_VELOCITY) velocity1 += ACCELERATION;
+        if (velocity2 < MAX_VELOCITY) velocity2 += ACCELERATION;
+        if (velocity1 > MAX_VELOCITY) velocity1 = MAX_VELOCITY;
+        if (velocity2 > MAX_VELOCITY) velocity2 = MAX_VELOCITY;
 
-        // Scroll maps
+        // جابجایی نقشه
         map1.updateMap1(velocity1);
         map2.updateMap2(velocity2);
 
-        // Distance traveled
+        // مسافت پیموده شده
         distance1 += velocity1;
         distance2 += velocity2;
 
-        //objects showing car 1
+        //بر حسب مسافت پیموده شده میزان موانع رو تنظیم میکنه
         int desiredObstacles1 = Math.min(
                 INITIAL_OBSTACLES_PER_ROAD + (int) (distance1 / OBSTACLE_INCREMENT_DISTANCE),
                 MAX_OBSTACLES_PER_ROAD
@@ -325,7 +340,7 @@ public class Racing_Game {
             }
         }
 
-        // moving & showing again objects car 1
+        // موانع جاده ماشین ۱ رو نشون میده و هروقت از صفحه رفتن بیرون مجدد میاره
         for (Objects obj : obstacles1) {
             ImageView iv = obj.getObstacle();
             iv.setY(iv.getY() + velocity1);
@@ -334,7 +349,7 @@ public class Racing_Game {
             }
         }
 
-        // moving & showing again objects car 2
+        // همون واسه جاده ماشین ۲
         for (Objects obj : obstacles2) {
             ImageView iv = obj.getObstacle();
             iv.setY(iv.getY() + velocity2);
@@ -343,7 +358,7 @@ public class Racing_Game {
             }
         }
 
-        // accidents
+        // برخورد ها
         for (Objects obj : obstacles1) {
             ImageView iv = obj.getObstacle();
             if (car1.getBoundsInParent().intersects(iv.getBoundsInParent())) {
@@ -361,7 +376,7 @@ public class Racing_Game {
             }
         }
 
-        // Show finish lines when close
+        // خط پایان رو وقتی نزدیک شد نشون میده
         if (distance1 >= FINISH_DISTANCE - screenHeight) {
             finishLine1.setVisible(true);
             double finishLineY1 = car1.getLayoutY() - (FINISH_DISTANCE - distance1);
@@ -419,7 +434,7 @@ public class Racing_Game {
         }
     }
 
-    // Stop loop and music
+    // حلقه و موزیک رو متوقف میکنه
     private void cleanup() {
         if (timer != null) {
             timer.stop();
@@ -432,12 +447,13 @@ public class Racing_Game {
         }
     }
 
+    //رویداد هایی که با رسیدن به خط پایان رخ میده
     private void showWin(String winner) {
-        // Dim the background
+        // بکگراند رو تیره میکنه
         Rectangle overlay = new Rectangle(screenWidth, screenHeight, Color.color(0, 0, 0, 0.65));
         overlay.setMouseTransparent(false); // block clicks to the game when finished
 
-        // Message + buttons
+        // پیغام و دکمه ها
         javafx.scene.control.Label title = new javafx.scene.control.Label(winner + " WINS!");
         title.setStyle("-fx-text-fill: white; -fx-font-size: 48px; -fx-font-weight: bold;");
 
@@ -452,18 +468,17 @@ public class Racing_Game {
         javafx.scene.layout.VBox box = new javafx.scene.layout.VBox(20, title, rematchBtn, backBtn);
         box.setAlignment(javafx.geometry.Pos.CENTER);
 
-        // Center the box
+        //مرکز قرارش میده
         javafx.scene.layout.StackPane overlayRoot = new javafx.scene.layout.StackPane(overlay, box);
         overlayRoot.setPrefSize(screenWidth, screenHeight);
         javafx.scene.layout.StackPane.setAlignment(box, javafx.geometry.Pos.CENTER);
 
-        // Put overlay on top
         root.getChildren().add(overlayRoot);
 
-        // Stop input & music
+        // موزیک و ورودی ها رو متوقف میکنه
         cleanup();
 
-        // Buttons
+        // اتفاقاتی که با کلیک روی دکمه ها رخ میده
         rematchBtn.setOnAction(e -> {
             Racing_Game fresh = new Racing_Game(car1ImagePath, car2ImagePath);
             Scene newScene = fresh.createScene(stageRef, customizeSceneRef);
@@ -476,7 +491,6 @@ public class Racing_Game {
             stageRef.setFullScreen(true);
         });
 
-        // Don’t let buttons steal arrow keys later if you add more logic
         rematchBtn.setFocusTraversable(false);
         backBtn.setFocusTraversable(false);
     }

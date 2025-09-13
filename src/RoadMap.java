@@ -13,12 +13,13 @@ public class RoadMap extends Pane {
     double roadWidth;
     double laneWidth;
 
-    List<Rectangle> laneLines = new ArrayList<>();
+    List<Rectangle> laneLines = new ArrayList<>(); // لیستی از خطوط وسط جاده
 
     public RoadMap(double width, double height) {
         this.width = width;
         this.height = height;
 
+        //رسم حاشیه و خود جاده
         grassWidth = width * 0.1;
         roadWidth = width * 0.8;
         laneWidth = roadWidth / 5;
@@ -34,6 +35,7 @@ public class RoadMap extends Pane {
 
         getChildren().addAll(leftGrass, road, rightGrass);
 
+        //رسم خط چین های جاده با افکت
         DropShadow glow = new DropShadow();
         glow.setColor(Color.web("#00FFFF"));
         glow.setRadius(10);
@@ -50,6 +52,8 @@ public class RoadMap extends Pane {
         }
     }
 
+    //حرکت لیست خط چین ها به صورت عمودی
+    //وقتی خطی از پایین صفحه رد شد دوباره میاد بالای صفحه
     public void updateMap1(double velocity) {
         for (Rectangle dash : laneLines) {
             dash.setY(dash.getY() + velocity);
@@ -59,6 +63,7 @@ public class RoadMap extends Pane {
         }
     }
 
+    //اینم همونه
     public void updateMap2(double velocity) {
         for (Rectangle dash : laneLines) {
             dash.setY(dash.getY() + velocity);

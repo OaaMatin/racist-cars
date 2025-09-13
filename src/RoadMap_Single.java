@@ -9,26 +9,24 @@ import java.util.List;
 public class RoadMap_Single extends Pane {
     public double width;
     public double height;
-
     public double grassWidth;
     public double roadWidth;
     public double laneWidth;
 
-    private final int lanes = 5; // single player: 5 lanes
+    private final int lanes = 5;
     private final List<Rectangle> laneLines = new ArrayList<>();
 
     public RoadMap_Single(double width, double height) {
         this.width = width;
         this.height = height;
 
-        // centered road: 80% road, 10% grass on each side
+        //رسم جاده و حاشیه اون
         grassWidth = width * 0.1;
         roadWidth  = width * 0.8;
         laneWidth  = roadWidth / lanes;
 
-        // background: grass | road | grass
         Rectangle leftGrass  = new Rectangle(0, 0, grassWidth, height);
-        leftGrass.setFill(Color.web("#ab9cb8")); // shoulder/grass color
+        leftGrass.setFill(Color.web("#ab9cb8"));
 
         Rectangle road = new Rectangle(grassWidth, 0, roadWidth, height);
         road.setFill(Color.web("#1F1B24"));
@@ -38,14 +36,13 @@ public class RoadMap_Single extends Pane {
 
         getChildren().addAll(leftGrass, road, rightGrass);
 
-        // dashed lane separators (lanes-1 = 4 lines for 5 lanes)
+        //رسم خط چین ها با یه افکت
         DropShadow glow = new DropShadow();
         glow.setColor(Color.web("#00FFFF"));
         glow.setRadius(10);
 
         for (int i = 1; i < lanes; i++) {
             double x = grassWidth + i * laneWidth;
-            // make a column of dashes down the screen
             for (int j = 0; j < 15; j++) {
                 Rectangle dash = new Rectangle(x - 2, j * 110, 4, 30);
                 dash.setFill(Color.web("#FF00FF"));
@@ -56,7 +53,7 @@ public class RoadMap_Single extends Pane {
         }
     }
 
-    // single-player scrolling update
+    // برای حرکت دادن خط چین هاست
     public void updateMap1(double velocity) {
         for (Rectangle dash : laneLines) {
             dash.setY(dash.getY() + velocity);
@@ -64,10 +61,5 @@ public class RoadMap_Single extends Pane {
                 dash.setY(dash.getY() - height - 40);
             }
         }
-    }
-
-    // keep method for compatibility; same behavior as updateMap1
-    public void updateMap2(double velocity) {
-        updateMap1(velocity);
     }
 }

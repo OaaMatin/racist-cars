@@ -11,6 +11,7 @@ public class Cars {
     public static int Control_car1 = 2;
     public static int Control_car2 = 5;
 
+    //برای ماشین ۱ با ورودی های تصویر ماشین و کلیدها و در حرکت بودن یا نبودن ماشین
     public static void move1(ImageView car1, Set<KeyCode> kc, AtomicBoolean car1_ismoving) {
         if (car1_ismoving.get()) return;
 
@@ -18,6 +19,7 @@ public class Cars {
         double screenWidth = bounds.getWidth();
         TranslateTransition transition = new TranslateTransition(Duration.seconds(0.2), car1);
 
+        //شروط برای جابجایی ماشین
         if (kc.contains(KeyCode.A) && Control_car1 > 1) {
             car1.setRotate(-15);
             transition.setByX(-screenWidth * 0.08);
@@ -36,6 +38,7 @@ public class Cars {
         transition.play();
     }
 
+    //همون چیزا واسه ماشین ۲
     public static void move2(ImageView car2, Set<KeyCode> kc, AtomicBoolean car2_ismoving) {
         if (car2_ismoving.get()) return;
 

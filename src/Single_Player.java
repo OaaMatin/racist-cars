@@ -28,7 +28,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javafx.application.Platform;
 import javafx.scene.input.KeyCombination;
@@ -36,7 +35,6 @@ import javafx.scene.input.KeyCombination;
 
 public class Single_Player {
 
-    // ---- tuning ----
     private static final int INITIAL_OBSTACLES_PER_ROAD = 5;
     private static final double OBSTACLE_INCREMENT_DISTANCE = 2000;
     private static final int MAX_OBSTACLES_PER_ROAD = 10;
@@ -45,25 +43,20 @@ public class Single_Player {
     private static final double MAX_VELOCITY = 20;
     private static final double FINISH_DISTANCE = 50000;
 
-    // stage refs (same pattern as Racing_Game)
     private Stage stageRef;
     private Scene customizeSceneRef;
 
-    // chosen skin
     private final String carImagePath;
 
-    // scene graph/layers
-    private StackPane root;     // holds gameLayer + overlays
-    private Pane gameLayer;     // only this layer gets blurred
+    private StackPane root;
+    private Pane gameLayer;
     private RoadMap_Single map;
     private ImageView car;
     private Rectangle finishLine;
 
-    // sizing
     private final double screenHeight = Screen.getPrimary().getBounds().getHeight();
     private final double screenWidth  = Screen.getPrimary().getBounds().getWidth();
 
-    // state
     private final Set<KeyCode> pressedKeys = new HashSet<>();
     private final ArrayList<Objects_Single> obstacles = new ArrayList<>();
     private final AtomicBoolean carIsMoving = new AtomicBoolean(false);
@@ -78,12 +71,10 @@ public class Single_Player {
 
     private boolean gameOver = false;
 
-    // UI / audio
     private AnimationTimer timer;
     private MediaPlayer player;
     private Label distanceLabel;
 
-    // hearts
     private final int maxCrashes = 37;
     private int livesRemaining = maxCrashes;
     private ImageView heartIcon;
@@ -94,22 +85,17 @@ public class Single_Player {
         this.carImagePath = carPath;
     }
 
-    /**
-     * Build the single-player Scene (caller sets the scene on the existing Stage).
-     */
     public Scene createScene(Stage stage, Scene customizeScene) {
         this.stageRef = stage;
         this.customizeSceneRef = customizeScene;
 
         gameLayer = new Pane();
-        root = new StackPane(gameLayer);  // root hosts game + overlays
+        root = new StackPane(gameLayer);
         Scene scene = new Scene(root, screenWidth, screenHeight);
 
-        // focus
         root.setFocusTraversable(true);
         root.requestFocus();
 
-        // music
         try {
             Media media = new Media(getClass().getResource("/resources/musics/TokyoـDrift.mp3").toExternalForm());
             player = new MediaPlayer(media);
@@ -122,16 +108,13 @@ public class Single_Player {
 
         stage.setOnCloseRequest(e -> cleanup());
 
-        // input (filters so buttons never steal)
         scene.addEventFilter(javafx.scene.input.KeyEvent.KEY_PRESSED,  e -> pressedKeys.add(e.getCode()));
         scene.addEventFilter(javafx.scene.input.KeyEvent.KEY_RELEASED, e -> pressedKeys.remove(e.getCode()));
         scene.setOnMouseClicked(e -> root.requestFocus());
 
-        // map & lanes
         map = new RoadMap_Single(screenWidth, screenHeight);
         laneWidth = map.roadWidth / numberOfLanes;
 
-        // car
         try {
             Image carImage = new Image(getClass().getResource(carImagePath).toExternalForm());
             car = new ImageView(carImage);
@@ -146,12 +129,10 @@ public class Single_Player {
             e.printStackTrace();
         }
 
-        // optional finish line
         finishLine = new Rectangle(map.getLayoutX() + map.grassWidth, 0, map.roadWidth, 10);
         finishLine.setFill(Color.RED);
         finishLine.setVisible(false);
 
-        // volume control
         Slider volumeSlider = new Slider(0, 1, 0.5);
         volumeSlider.setOrientation(javafx.geometry.Orientation.VERTICAL);
         Label speakerLabel = new Label("\uD83D\uDD0A");
@@ -173,10 +154,8 @@ public class Single_Player {
             speakerLabel.setText("\uD83D\uDD07");
         }
 
-        // add to game layer
         gameLayer.getChildren().addAll(map, car, finishLine, volumeControl);
 
-        // HUD distance
         distanceLabel = new Label();
         distanceLabel.setTextFill(Color.WHITE);
         distanceLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
@@ -186,7 +165,6 @@ public class Single_Player {
         distanceLabel.setText(String.format("Distance: %.0f  |  Max: %.0f", distance, maxDistance));
         gameLayer.getChildren().add(distanceLabel);
 
-        // Single heart + counter "xN"
         heartIcon = new ImageView(new Image(getClass().getResource("/resources/pictures/heart.png").toExternalForm()));
         heartIcon.setFitWidth(40);
         heartIcon.setFitHeight(40);
@@ -195,13 +173,11 @@ public class Single_Player {
 
         heartCountLabel = new Label("x" + livesRemaining);
         heartCountLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;");
-        heartCountLabel.setLayoutX(10 + 40 + 8); // to the right of the heart
+        heartCountLabel.setLayoutX(10 + 40 + 8);
         heartCountLabel.setLayoutY(14);
 
         gameLayer.getChildren().addAll(heartIcon, heartCountLabel);
 
-
-        // initial obstacles (5 lanes)
         for (int lane = 0; lane < 5; lane++) {
             Objects_Single obj = new Objects_Single(lane);
             obj.setObjectY(-Math.random() * 1500);
@@ -209,7 +185,6 @@ public class Single_Player {
             gameLayer.getChildren().add(obj.getObstacle());
         }
 
-        // pause UI (Continue / Rematch / Exit) overlay goes ABOVE game layer
         Pane pauseOverlay = buildPauseOverlay();
 
         Button pauseBtn = new Button("Pause");
@@ -225,9 +200,8 @@ public class Single_Player {
         });
 
         gameLayer.getChildren().add(pauseBtn);
-        root.getChildren().add(pauseOverlay); // overlay on top, not blurred
+        root.getChildren().add(pauseOverlay);
 
-        // game loop
         timer = new AnimationTimer() {
             @Override public void handle(long now) {
                 if (gameOver) return;
@@ -240,7 +214,7 @@ public class Single_Player {
                         maxDistance = distance;
                         saveMaxDistance();
                     }
-                    showWin(); // <-- reached finish: show "You Won!"
+                    showWin();
                 }
             }
         };
@@ -249,7 +223,6 @@ public class Single_Player {
         return scene;
     }
 
-    // ---- Pause overlay (Continue / Rematch / Exit) ----
     private Pane buildPauseOverlay() {
         Pane overlay = new Pane();
         overlay.setStyle("-fx-background-color: rgba(0,0,0,0.6);");
@@ -286,12 +259,10 @@ public class Single_Player {
         });
 
         rematchBtn.setOnAction(e -> {
-            cleanup(); // stop current timer/music
+            cleanup();
             Single_Player fresh = new Single_Player(carImagePath);
             Scene newScene = fresh.createScene(stageRef, customizeSceneRef);
             stageRef.setScene(newScene);
-
-            // Re-enter fullscreen *after* the scene is attached
             stageRef.setFullScreenExitHint("");
             stageRef.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
             Platform.runLater(() -> stageRef.setFullScreen(true));
@@ -309,9 +280,8 @@ public class Single_Player {
         return overlay;
     }
 
-    // ---- Game Over overlay (blur background only) ----
     private void showGameOver() {
-        gameLayer.setEffect(new GaussianBlur(18)); // blur only background
+        gameLayer.setEffect(new GaussianBlur(18));
 
         Label title = new Label("GAME OVER!");
         title.setStyle("-fx-text-fill: red; -fx-font-size: 56px; -fx-font-weight: bold;");
@@ -332,16 +302,15 @@ public class Single_Player {
         overlayRoot.setPrefSize(screenWidth, screenHeight);
         StackPane.setAlignment(box, Pos.CENTER);
 
-        root.getChildren().add(overlayRoot); // on top, not blurred
-        cleanup(); // stop timer/music
+        root.getChildren().add(overlayRoot);
+        cleanup();
 
         rematchBtn.setOnAction(e -> {
-            cleanup(); // stop current timer/music
+            cleanup();
             Single_Player fresh = new Single_Player(carImagePath);
             Scene newScene = fresh.createScene(stageRef, customizeSceneRef);
             stageRef.setScene(newScene);
 
-            // Re-enter fullscreen *after* the scene is attached
             stageRef.setFullScreenExitHint("");
             stageRef.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
             Platform.runLater(() -> stageRef.setFullScreen(true));
@@ -356,9 +325,8 @@ public class Single_Player {
         });
     }
 
-    // ---- Win overlay (blur background only) ----
     private void showWin() {
-        gameLayer.setEffect(new GaussianBlur(18)); // blur only background
+        gameLayer.setEffect(new GaussianBlur(18));
 
         Label title = new Label("YOU WON!");
         title.setStyle("-fx-text-fill: #00e676; -fx-font-size: 56px; -fx-font-weight: bold;");
@@ -379,16 +347,15 @@ public class Single_Player {
         overlayRoot.setPrefSize(screenWidth, screenHeight);
         StackPane.setAlignment(box, Pos.CENTER);
 
-        root.getChildren().add(overlayRoot); // on top, not blurred
-        cleanup(); // stop timer/music
+        root.getChildren().add(overlayRoot);
+        cleanup();
 
         rematchBtn.setOnAction(e -> {
-            cleanup(); // stop current timer/music
+            cleanup();
             Single_Player fresh = new Single_Player(carImagePath);
             Scene newScene = fresh.createScene(stageRef, customizeSceneRef);
             stageRef.setScene(newScene);
 
-            // Re-enter fullscreen *after* the scene is attached
             stageRef.setFullScreenExitHint("");
             stageRef.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
             Platform.runLater(() -> stageRef.setFullScreen(true));
@@ -403,20 +370,16 @@ public class Single_Player {
         });
     }
 
-    // ---- per-frame update ----
     private void update() {
-        // speed
         if (velocity < MAX_VELOCITY) velocity += ACCELERATION;
         if (velocity > MAX_VELOCITY) velocity = MAX_VELOCITY;
 
-        // scroll map
         map.updateMap1(velocity);
         distance += velocity;
         if (distance > maxDistance) maxDistance = distance;
 
         distanceLabel.setText(String.format("Distance: %.0f  |  Max: %.0f", distance, maxDistance));
 
-        // progressive spawns
         int desired = Math.min(INITIAL_OBSTACLES_PER_ROAD + (int)(distance / OBSTACLE_INCREMENT_DISTANCE), MAX_OBSTACLES_PER_ROAD);
         while (obstacles.size() < desired) {
             int randomLane = (int)(Math.random() * 5);
@@ -435,7 +398,6 @@ public class Single_Player {
             }
         }
 
-        // move & recycle
         for (Objects_Single obj : obstacles) {
             ImageView iv = obj.getObstacle();
             iv.setY(iv.getY() + velocity);
@@ -478,14 +440,12 @@ public class Single_Player {
             }
         }
 
-        // collisions -> decrement lives and maybe show GAME OVER
         for (Objects_Single obj : obstacles) {
             ImageView iv = obj.getObstacle();
             if (car.getBoundsInParent().intersects(iv.getBoundsInParent())) {
                 iv.setY(-Math.random() * 2000);
                 velocity *= 0.8;
 
-                // decrease lives and update counter
                 if (livesRemaining > 0) {
                     livesRemaining--;
                     heartCountLabel.setText("x" + livesRemaining);
@@ -501,8 +461,6 @@ public class Single_Player {
             }
         }
 
-
-        // optional finish line visual
         if (distance >= FINISH_DISTANCE - screenHeight) {
             finishLine.setVisible(true);
             double finishY = car.getLayoutY() - (FINISH_DISTANCE - distance);
@@ -510,7 +468,6 @@ public class Single_Player {
         }
     }
 
-    // ---- utils ----
     private void cleanup() {
         if (timer != null) timer.stop();
         if (player != null) {
@@ -534,7 +491,6 @@ public class Single_Player {
         }
     }
 
-    // lane movement (uses local destX to satisfy lambda capture rules)
     private void moveCarBetweenLanes(ImageView car, Set<KeyCode> pressed, AtomicBoolean isMoving) {
         if (isMoving.get()) return;
 
@@ -557,7 +513,7 @@ public class Single_Player {
 
         isMoving.set(true);
 
-        final double destX = targetX; // lambda-safe copy
+        final double destX = targetX;
         TranslateTransition tt = new TranslateTransition(Duration.seconds(0.15), car);
         tt.setToX(destX - car.getLayoutX());
         tt.setOnFinished(e -> {

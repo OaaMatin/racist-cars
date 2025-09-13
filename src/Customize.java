@@ -41,11 +41,13 @@ public class Customize extends Application {
         double screenWidth = Screen.getPrimary().getBounds().getWidth();
         double screenHeight = Screen.getPrimary().getBounds().getHeight();
 
+        //تیتر
         Label mainLabel = new Label("Multi Player Customize");
         mainLabel.setFont(Font.font("Courier New", FontWeight.EXTRA_BOLD, 32));
         mainLabel.setTextFill(Color.WHITE);
         mainLabel.setAlignment(Pos.CENTER);
 
+        //بخش سمت چپ مربوط به بازیکن شماره ۱
         Label car1Label = new Label("Car1");
         car1Label.setFont(Font.font("Courier New", FontWeight.BOLD, 24));
         car1Label.setTextFill(Color.WHITE);
@@ -58,6 +60,7 @@ public class Customize extends Application {
         double cellWidth = 600.0 / 4;
         double cellHeight = 600.0 / 2;
 
+        //ماشین های بازیکن شماره ۱
         String[] imageUrlsCar1 = {
                 "resources/pictures/car1skin1.png",
                 "resources/pictures/car1skin2.png",
@@ -69,6 +72,7 @@ public class Customize extends Application {
                 "resources/pictures/car4.png",
         };
 
+        //قرار دادن تصاویر ماشین ها در باکس
         for (int row = 0; row < 2; row++) {
             for (int col = 0; col < 4; col++) {
                 StackPane cell = new StackPane();
@@ -94,6 +98,7 @@ public class Customize extends Application {
             }
         }
 
+        //حلقه انتخاب شدن ماشین بازیکن ۱
         selectCar1 = new Rectangle(cellWidth, cellHeight);
         selectCar1.setFill(Color.TRANSPARENT);
         selectCar1.setStroke(Color.PINK);
@@ -104,6 +109,7 @@ public class Customize extends Application {
         car1Box.setAlignment(Pos.TOP_CENTER);
         car1Box.setPadding(new Insets(0, 0, 0, 10));
 
+        //باکس سمت راست بازیکن شماره ۲
         Label car2Label = new Label("Car2");
         car2Label.setFont(Font.font("Courier New", FontWeight.BOLD, 24));
         car2Label.setTextFill(Color.WHITE);
@@ -116,6 +122,7 @@ public class Customize extends Application {
         double cell2Width = 600.0 / 2;
         double cell2Height = 600.0 / 2;
 
+        //ادرس تصویر ماشین های بازیکن شماره ۲
         String[] imageUrlsCar2 = {
                 "resources/pictures/car1skin1.png",
                 "resources/pictures/car1.png",
@@ -123,6 +130,7 @@ public class Customize extends Application {
                 "resources/pictures/car2.png"
         };
 
+        //جاگذاری تصاویر در باکس
         for (int row = 0; row < 2; row++) {
             for (int col = 0; col < 2; col++) {
                 StackPane cell = new StackPane();
@@ -148,6 +156,7 @@ public class Customize extends Application {
             }
         }
 
+        //حلقه انتخاب شدن ماشین بازیکن شماره ۲
         selectCar2 = new Rectangle(cell2Width, cell2Height);
         selectCar2.setFill(Color.TRANSPARENT);
         selectCar2.setStroke(Color.PINK);
@@ -158,6 +167,7 @@ public class Customize extends Application {
         car2Box.setAlignment(Pos.TOP_CENTER);
         car2Box.setPadding(new Insets(0, 10, 0, 0));
 
+        //باکس سمت راست و چپ رو کنار هم میزاره
         HBox rectanglesBox = new HBox(20, car1Box, car2Box);
         rectanglesBox.setAlignment(Pos.CENTER);
 
@@ -171,6 +181,7 @@ public class Customize extends Application {
         updateSelectionPosition(car2Grid, selectCar2, 0, 2, cell2Width, cell2Height);
         updateCar2ImageZoom(0, -1);
 
+        //بکگراند صفحه
         VBox content = new VBox(20);
         Image bgImage = new Image(getClass().getResource("resources/pictures/background3.jpeg").toExternalForm());
         BackgroundImage backgroundImage = new BackgroundImage(
@@ -187,6 +198,7 @@ public class Customize extends Application {
         content.getChildren().addAll(mainLabel, rectanglesBox);
         StackPane root = new StackPane(content);
 
+        //دکمه های ready زیر هر باکس
         readycar1 = new Button("Ready Car1 (Ctrl)");
         readycar1.setStyle("-fx-background-color: #8e44ad; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10;");
         car1Box.getChildren().add(readycar1);
@@ -194,6 +206,7 @@ public class Customize extends Application {
         readycar2.setStyle("-fx-background-color:#8e44ad; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10;");
         car2Box.getChildren().add(readycar2);
 
+        //تغییر وضعیت به آماده
         readycar1.setOnAction(e -> {
             iscar1ready = !iscar1ready;
             readycar1.setText(iscar1ready ? "Car1 Ready ✔️" : "Ready Car1 (Ctrl)");
@@ -203,10 +216,10 @@ public class Customize extends Application {
             readycar2.setText(iscar2ready ? "Car2 Ready ✔️" : "Ready Car2 (Shift)");
         });
 
+        //برگشت به صفحه منو
         Button backButton = new Button("Back");
         backButton.setStyle("-fx-background-color:#c0392b; -fx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 20px; -fx-cursor: hand");
         backButton.setPrefSize(150, 40);
-
 
         StackPane.setAlignment(backButton, Pos.BOTTOM_CENTER);
         StackPane.setMargin(backButton, new Insets(0, 0, 10, 0));
@@ -221,12 +234,12 @@ public class Customize extends Application {
             }
         });
 
-
-
         Scene scene = new Scene(root, screenWidth, screenHeight);
 
         scene.setOnKeyPressed(event -> {
             KeyCode code = event.getCode();
+
+            //حرکت های بازیکن شماره ۱ WASD
             if (code == KeyCode.A) {
                 int prev = selectedIndexCar1;
                 if (selectedIndexCar1 > 0) {
@@ -263,6 +276,7 @@ public class Customize extends Application {
                             selectedIndexCar1, 4, cellWidth, cellHeight);
                     updateCar1ImageZoom(selectedIndexCar1, prev);
                 }
+            //حرکت های بازیکن شماره ۲ با دکمه های جهتی
             } else if (code == KeyCode.LEFT) {
                 int prev = selectedIndexCar2;
                 if (selectedIndexCar2 > 0) {
@@ -299,6 +313,8 @@ public class Customize extends Application {
                             selectedIndexCar2, 2, cell2Width, cell2Height);
                     updateCar2ImageZoom(selectedIndexCar2, prev);
                 }
+
+            //آماده شدن با کیبورد
             } else if (code == KeyCode.CONTROL) {
                 iscar1ready = !iscar1ready;
                 readycar1.setText(iscar1ready ? "Car1 Ready ✔️" : "Ready Car1 (Ctrl)");
@@ -316,8 +332,6 @@ public class Customize extends Application {
         });
         primaryStage.setTitle("Multi Player Customize");
         primaryStage.setScene(scene);
-//        primaryStage.initStyle(StageStyle.UNDECORATED);
-//        primaryStage.setFullScreenExitHint("");
         primaryStage.setFullScreen(true);
         primaryStage.show();
         root.requestFocus();
@@ -336,15 +350,16 @@ public class Customize extends Application {
 
     private void updateCar2ImageZoom(int newindex, int oldindex) {
         if (oldindex >= 0 && oldindex < car1Images.size()) {
-            car2Images.get(oldindex).setScaleX(1);
-            car2Images.get(oldindex).setScaleY(1);
+            car2Images.get(oldindex).setScaleX(0.8);
+            car2Images.get(oldindex).setScaleY(0.8);
         }
         if (newindex >= 0 && newindex < car1Images.size()) {
-            car2Images.get(newindex).setScaleX(1.1);
-            car2Images.get(newindex).setScaleY(1.1);
+            car2Images.get(newindex).setScaleX(0.9);
+            car2Images.get(newindex).setScaleY(0.9);
         }
     }
 
+    //جابجایی حلقه انتخاب ماشین
     private void updateSelectionPosition(GridPane grid, Rectangle rect, int index, int columns, double cellWidth, double cellHeight) {
         int row = index / columns;
         int col = index % columns;
@@ -352,6 +367,7 @@ public class Customize extends Application {
         rect.setTranslateY(row * (cellHeight + grid.getVgap() + 2));
     }
 
+    //وقتی بازیکنا آماده شدن صفحه رو تار میکنه و دکمه استارت و کنسل رو نشون میده
     private void checkIfBothReady(Pane root) {
         if (iscar1ready && iscar2ready && startCancelBox == null) {
             for (Node node : root.getChildren())
@@ -376,6 +392,7 @@ public class Customize extends Application {
             root.getChildren().add(startCancelBox);
             selectedButtonIndex = 0;
 
+            //عملیات استارت زدن
             startBtn.setOnAction(e -> {
                 Racing_Game racing = new Racing_Game(selectedImageCar1Path, selectedImageCar2Path);
 
@@ -386,6 +403,7 @@ public class Customize extends Application {
                 stage.setFullScreen(true);
             });
 
+            //عملیات کنسل کردن
             cancelBtn.setOnAction(e -> {
                 root.getChildren().remove(startCancelBox);
                 startCancelBox = null;
