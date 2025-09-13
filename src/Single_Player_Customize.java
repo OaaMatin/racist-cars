@@ -137,6 +137,20 @@ public class Single_Player_Customize extends Application {
                 ex.printStackTrace();
             }
         });
+        readyCar = new Button("Ready (Shift)");
+        readyCar.setStyle("-fx-background-color:#4caf50; -fx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 20px; -fx-cursor: hand");
+        readyCar.setPrefSize(200, 50);
+
+        StackPane.setAlignment(readyCar, Pos.BOTTOM_RIGHT);
+        StackPane.setMargin(readyCar, new Insets(0, 20, 20, 0));
+        //root.getChildren().add(readyCar);
+
+        readyCar.setOnAction(e -> {
+            isCarReady = !isCarReady;
+            readyCar.setText(isCarReady ? "You're Ready!" : "Ready (Shift)");
+            checkIfReady(root);
+        });
+
 
         Scene scene = new Scene(root, screenWidth, screenHeight);
 
