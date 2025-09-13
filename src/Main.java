@@ -20,20 +20,24 @@ public class Main extends Application {
     private MediaPlayer mediaPlayer;
 
     public void start(Stage primaryStage) {
+        //عکس بکگراند
         Image image = new Image("resources/pictures/background_wall.png");
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
 
+        //لوگو
         Image image2 = new Image("resources/pictures/logo2.png");
         ImageView imageView = new ImageView(image2);
         imageView.setFitWidth(500);
         imageView.setPreserveRatio(true);
 
+        //موسیقی صفحه home
         String musicFile = "src/resources/musics/Light_of_the_Seven.mp3";
         Media media = new Media(new File(musicFile).toURI().toString());
         mediaPlayer = new MediaPlayer(media);
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         mediaPlayer.play();
 
+        //دکمه های سه گانه
         Button SinglePlayerBtn = new Button("Single Player");
         SinglePlayerBtn.getStyleClass().add("neon-button-yellow");
         SinglePlayerBtn.setPrefSize(200, 60);
@@ -46,6 +50,7 @@ public class Main extends Application {
         exitBtn.getStyleClass().add("neon-button-pink");
         exitBtn.setPrefSize(200, 60);
 
+        //نوار تنظیم صدا
         Slider volumeSlider = new Slider(0, 1, 0.5);
         volumeSlider.setOrientation(Orientation.VERTICAL);
 
@@ -55,10 +60,12 @@ public class Main extends Application {
         VBox volumeControl = new VBox(5, volumeSlider, speakerLabel);
         volumeControl.setAlignment(Pos.CENTER);
 
+        //ساخت pane برای تمام اجزای صفحه
         Pane pane = new Pane();
         pane.setBackground(new Background(backgroundImage));
         pane.getChildren().addAll(SinglePlayerBtn, MultiPlayerBtn, exitBtn, imageView, volumeControl);
 
+        //اتفاقی که با زدن دکمه ها میفته
         SinglePlayerBtn.setOnAction(e -> {
             mediaPlayer.stop();
             new Single_Player_Customize().start(primaryStage);
@@ -69,31 +76,33 @@ public class Main extends Application {
         });
         exitBtn.setOnAction(e -> ((Stage) exitBtn.getScene().getWindow()).close());
 
+        //اضافه کردن css
         Scene scene = new Scene(pane);
         scene.getStylesheets().add("resources/CSS/neon-buttons.css");
 
-        // Center buttons horizontally
+        // قرار دادن دکمه ها به صورت عمودی روی هم در مرکز صفحه
         SinglePlayerBtn.layoutXProperty().bind(scene.widthProperty().subtract(SinglePlayerBtn.widthProperty()).divide(2));
         MultiPlayerBtn.layoutXProperty().bind(scene.widthProperty().subtract(MultiPlayerBtn.widthProperty()).divide(2));
         exitBtn.layoutXProperty().bind(scene.widthProperty().subtract(exitBtn.widthProperty()).divide(2));
 
-        // Vertical positions as a fraction of the scene height
+        // تنظیم موقعیت دکمه ها به صورت کسری از ارتفاع صفحه
         SinglePlayerBtn.layoutYProperty().bind(scene.heightProperty().multiply(0.725));
         MultiPlayerBtn.layoutYProperty().bind(scene.heightProperty().multiply(0.815));
         exitBtn.layoutYProperty().bind(scene.heightProperty().multiply(0.90));
 
-        // Volume control near left edge, proportional Y
+        // تنظیم موقعیت نوار تنظیم صدا
         volumeControl.layoutXProperty().set(15);
         volumeControl.layoutYProperty().bind(scene.heightProperty().multiply(0.78));
 
-        // Center the logo
+        // قرار دادن لوگو در مرکز
         scene.widthProperty().addListener((obs, ov, nv) -> centerImage(imageView, scene));
         scene.heightProperty().addListener((obs, ov, nv) -> centerImage(imageView, scene));
 
-        // Bind volume
+        // تنظیم میزان صدا
         mediaPlayer.volumeProperty().bind(volumeSlider.valueProperty());
         volumeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             double v = newVal.doubleValue();
+            //تغییر آیکون متناسب با میزان صدا
             speakerLabel.setText(v == 0 ? "\uD83D\uDD07" : (v <= 0.3 ? "\uD83D\uDD08" : (v <= 0.7 ? "\uD83D\uDD09" : "\uD83D\uDD0A")));
         });
 
@@ -102,6 +111,8 @@ public class Main extends Application {
         primaryStage.setFullScreenExitHint("");
         primaryStage.setFullScreen(true);
         primaryStage.show();
+
+        //مربوط به تمام صفحه کردن
         Platform.runLater(() -> {
             var screen = Screen.getScreensForRectangle(primaryStage.getX(), primaryStage.getY(), primaryStage.getWidth(), primaryStage.getHeight()).stream().findFirst().orElse(Screen.getPrimary());
             var vb = screen.getVisualBounds();
@@ -110,10 +121,9 @@ public class Main extends Application {
             primaryStage.setWidth(vb.getWidth());
             primaryStage.setHeight(vb.getHeight());
         });
-        centerImage(imageView, scene);
     }
 
-
+    //مرکز قرار دادن لوگو به صورت افقی
     private void centerImage(ImageView imageView, Scene scene) {
         double centerX = (scene.getWidth() - imageView.getFitWidth()) / 2;
         imageView.setX(centerX);
