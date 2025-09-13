@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.List;
-
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -103,7 +102,7 @@ public class Single_Player_Customize extends Application {
         updateSelectionPosition(carGrid, selectCar, 0, 4, cellWidth, cellHeight);
         updateCarImageZoom(0, -1);
 
-        VBox content = new VBox(20);
+        VBox content = new VBox(0);
         Image bgImage = new Image(getClass().getResource("resources/pictures/background3.jpeg").toExternalForm());
         BackgroundImage backgroundImage = new BackgroundImage(
                 bgImage,
@@ -114,22 +113,14 @@ public class Single_Player_Customize extends Application {
         );
         content.setBackground(new Background(backgroundImage));
 
-        content.setPadding(new Insets(0, 50, 30, 50));
+        content.setPadding(new Insets(60, 50, 50, 50));
         content.setAlignment(Pos.CENTER);
         content.getChildren().addAll(mainLabel, carBox);
         StackPane root = new StackPane(content);
 
-        readyCar = new Button("Ready (Shift)");
-        readyCar.setStyle("-fx-background-color:#8e44ad; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10px");
-        carBox.getChildren().add(readyCar);
-
-        readyCar.setOnAction(event -> {
-            isCarReady = !isCarReady;
-            readyCar.setText(isCarReady ? "You're Ready!" : "Ready (Shift)");
-        });
 
         Button backButton = new Button("Back");
-        backButton.setStyle("-fx-background-color:#c0392b; -fx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 20px; -fx-cursor: hand");
+        backButton.setStyle("-fx-background-color:#e91e63; -fx-text-fill:white; -fx-background-radius: 13; -fx-font-size: 20px; -fx-cursor: hand");
         backButton.setPrefSize(150, 40);
 
 
